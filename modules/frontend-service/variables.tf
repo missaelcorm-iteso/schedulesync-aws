@@ -106,3 +106,8 @@ variable "secrets" {
   description = "Secrets for the container"
   default     = []
 }
+
+variable "alb_listener_arn" {
+  type        = string
+  description = "ARN of the ALB listener"
+}

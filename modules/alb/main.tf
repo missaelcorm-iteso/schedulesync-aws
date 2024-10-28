@@ -69,6 +69,8 @@ resource "aws_lb_target_group" "frontend" {
   target_type         = "ip"
   deregistration_delay = 30
 
+  depends_on = [aws_lb.main]
+  
   health_check {
     enabled             = true
     healthy_threshold   = 2

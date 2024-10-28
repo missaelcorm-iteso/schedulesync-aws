@@ -102,6 +102,7 @@ module "frontend_service" {
   private_subnet_ids = module.networking.private_subnet_ids
   security_group_id = module.security.frontend_security_group_id
   alb_target_group_arn = module.alb.frontend_target_group_arn
+  alb_listener_arn     = module.alb.https_listener_arn
   execution_role_arn = module.security.ecs_task_execution_role_arn
   task_role_arn = module.security.frontend_task_role_arn
 
@@ -113,6 +114,8 @@ module "frontend_service" {
   container_cpu = 256
   container_memory = 512
   desired_count = 2
+
+  depends_on = [module.alb]
 
   environment_variables = [
     {

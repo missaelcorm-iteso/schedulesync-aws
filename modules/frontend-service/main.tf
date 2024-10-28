@@ -97,6 +97,8 @@ resource "aws_ecs_service" "frontend" {
     type = "ECS"
   }
 
+  depends_on = [var.alb_listener_arn]
+
   tags = local.common_tags
 }
 
