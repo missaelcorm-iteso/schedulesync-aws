@@ -43,11 +43,6 @@ output "desired_count" {
   value       = aws_ecs_service.backend.desired_count
 }
 
-output "running_count" {
-  description = "Number of running tasks"
-  value       = aws_ecs_service.backend.running_count
-}
-
 output "service_registry_arn" {
   description = "ARN of the service registry"
   value       = aws_service_discovery_service.backend.arn

@@ -28,11 +28,6 @@ output "desired_count" {
   value       = aws_ecs_service.frontend.desired_count
 }
 
-output "running_count" {
-  description = "Number of running tasks"
-  value       = aws_ecs_service.frontend.running_count
-}
-
 output "container_name" {
   description = "Name of the container"
   value       = "frontend"
