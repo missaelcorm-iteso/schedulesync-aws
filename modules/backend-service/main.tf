@@ -60,7 +60,6 @@ resource "aws_ecs_service" "backend" {
   desired_count                     = var.desired_count
   launch_type                       = "FARGATE"
   platform_version                  = "LATEST"
-  health_check_grace_period_seconds = 60
 
   network_configuration {
     subnets         = var.private_subnet_ids
