@@ -16,9 +16,9 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "domain_name" {
+variable "root_domain" {
   type        = string
-  description = "Domain name for the application"
+  description = "Root domain name (e.g., example.com)"
 }
 
 variable "vpc_cidr" {

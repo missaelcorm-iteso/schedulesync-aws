@@ -1,6 +1,6 @@
 # environments/dev/main.tf
 locals {
-  name_prefix = "${var.project}-${var.environment}"
+  app_domain = "${var.project}-${var.environment}.${var.root_domain}"
 }
 
 # Networking
@@ -44,8 +44,10 @@ module "alb" {
   vpc_id               = module.networking.vpc_id
   public_subnet_ids    = module.networking.public_subnet_ids
   security_group_id    = module.security.alb_security_group_id
-  certificate_arn      = module.acm.certificate_arn
-  domain_name          = var.domain_name
+  certificate_arn      = module.acm.certificate_validation_arn
+  domain_name          = local.app_domain
+
+  depends_on = [module.acm]
 }
 
 # Backend Service
@@ -88,6 +90,8 @@ module "backend_service" {
       valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/database_url"
     }
   ]
+
+  depends_on = [module.acm]
 }
 
 # Frontend Service
@@ -108,14 +112,14 @@ module "frontend_service" {
 
   ecr_repository_url = var.frontend_image.repository_url
   container_image_tag = var.frontend_image.tag
-  backend_service_url = "${var.domain_name}/api"
+  backend_service_url = "api.${local.app_domain}"
 
   container_port = 80
   container_cpu = 256
   container_memory = 512
   desired_count = 2
 
-  depends_on = [module.alb]
+  depends_on = [module.alb, module.acm]
 
   environment_variables = [
     {
@@ -124,7 +128,7 @@ module "frontend_service" {
     },
     {
       name  = "API_URL"
-      value = "https://${var.domain_name}/api"
+      value = "https://api.${local.app_domain}"
     }
   ]
 }
@@ -135,7 +139,7 @@ module "dns" {
 
   project            = var.project
   environment        = var.environment
-  domain_name        = var.domain_name
+  root_domain        = var.root_domain
   cloudflare_zone_id = var.cloudflare_zone_id
   alb_dns_name       = module.alb.alb_dns_name
   enable_proxy       = true
@@ -146,15 +150,9 @@ module "acm" {
 
   project     = var.project
   environment = var.environment
-  domain_name = var.domain_name
-  
-  # Include all domains you need to secure
-  subject_alternative_names = [
-    "*.${var.domain_name}",                    # Wildcard for subdomains
-    "api.schedulesync-${var.environment}.${var.domain_name}" # API subdomain
-  ]
-
+  root_domain  = var.root_domain
   cloudflare_zone_id      = var.cloudflare_zone_id
+  cloudflare_api_token = var.cloudflare_api_token
 }
 
 # Data sources

@@ -8,11 +8,6 @@ variable "environment" {
   description = "Environment name"
 }
 
-variable "domain_name" {
-  type        = string
-  description = "Main domain name"
-}
-
 variable "subject_alternative_names" {
   type        = list(string)
   description = "Additional domain names for the certificate"
@@ -22,4 +17,14 @@ variable "subject_alternative_names" {
 variable "cloudflare_zone_id" {
   type        = string
   description = "Cloudflare Zone ID"
+}
+
+variable "cloudflare_api_token" {
+  type        = string
+  description = "Cloudflare API Token"
+}
+
+variable "root_domain" {
+  type        = string
+  description = "Root domain (e.g., example.com)"
 }

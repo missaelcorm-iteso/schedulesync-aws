@@ -9,23 +9,28 @@ terraform {
 
 locals {
   name_prefix = "${var.project}-${var.environment}"
-  
-  # Combine main domain and alternative names
-  domain_names = distinct(concat([var.domain_name], var.subject_alternative_names))
-}
+  domain_name = "${local.name_prefix}.${var.root_domain}"
 
-# Create ACM certificate
-resource "aws_acm_certificate" "main" {
-  domain_name               = var.domain_name
-  subject_alternative_names = var.subject_alternative_names
-  validation_method         = "DNS"
-
-  tags = {
-    Name        = "${local.name_prefix}-certificate"
+  common_tags = {
     Environment = var.environment
     Project     = var.project
     ManagedBy   = "Terraform"
   }
+}
+
+# Create ACM certificate
+resource "aws_acm_certificate" "main" {
+  domain_name = local.domain_name
+  subject_alternative_names = [
+    "*.${local.domain_name}",
+    "api.${local.domain_name}"
+  ]
+  validation_method         = "DNS"
+
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-cert"
+    Timestamp = timestamp()  # This forces recreation
+  })
 
   lifecycle {
     create_before_destroy = true
@@ -44,14 +49,25 @@ resource "cloudflare_record" "acm_validation" {
 
   zone_id = var.cloudflare_zone_id
   name    = each.value.name
-  value   = each.value.record
+  value = each.value.record
   type    = each.value.type
   ttl     = 60
   proxied = false # Important: DNS validation records should not be proxied
+
+  lifecycle {
+    create_before_destroy = true
+    replace_triggered_by = [
+      aws_acm_certificate.main
+    ]
+  }
 }
 
 # Validate the certificate
 resource "aws_acm_certificate_validation" "main" {
   certificate_arn         = aws_acm_certificate.main.arn
   validation_record_fqdns = [for record in cloudflare_record.acm_validation : record.hostname]
+
+  timeouts {
+    create = "30m"
+  }
 }

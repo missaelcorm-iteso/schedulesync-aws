@@ -9,26 +9,28 @@ terraform {
 }
 
 locals {
-  name_prefix = "${var.project}-${var.environment}"
+  app_domain = "${var.project}-${var.environment}.${var.root_domain}"
 }
 
 # Main domain record
 resource "cloudflare_record" "main" {
   zone_id = var.cloudflare_zone_id
-  name    = "schedulesync-${var.environment}" # This will create schedulesync-dev.domain.com
+  name    = "${var.project}-${var.environment}" # This will create schedulesync-dev.domain.com
   value   = var.alb_dns_name
   type    = "CNAME"
   proxied = var.enable_proxy
+  allow_overwrite = true
   ttl     = 1 # Auto when proxied
 }
 
 # API subdomain record (optional if using path-based routing)
 resource "cloudflare_record" "api" {
   zone_id = var.cloudflare_zone_id
-  name    = "api.schedulesync-${var.environment}" # This will create api.schedulesync-dev.yourdomain.com
+  name    = "api.${var.project}-${var.environment}" # This will create api.schedulesync-dev.yourdomain.com
   value   = var.alb_dns_name
   type    = "CNAME"
   proxied = var.enable_proxy
+  allow_overwrite = true
   ttl     = 1
 }
 
@@ -38,9 +40,6 @@ resource "cloudflare_zone_settings_override" "main" {
 
   settings {
     ssl = "strict"
-    min_tls_version = "1.2"
-    tls_1_3 = "on"
-    automatic_https_rewrites = "on"
     always_use_https = "on"
   }
 }
