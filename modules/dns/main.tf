@@ -37,7 +37,7 @@ resource "cloudflare_zone_settings_override" "main" {
   zone_id = var.cloudflare_zone_id
 
   settings {
-    ssl = "full_strict"
+    ssl = "strict"
     min_tls_version = "1.2"
     tls_1_3 = "on"
     automatic_https_rewrites = "on"
