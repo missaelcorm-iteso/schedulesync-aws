@@ -16,8 +16,10 @@ resource "aws_lb" "main" {
   security_groups    = [var.security_group_id]
   subnets           = var.public_subnet_ids
 
+  enable_cross_zone_load_balancing = true
   enable_deletion_protection = true
   enable_http2              = true
+  ip_address_type = "ipv4"
 
   access_logs {
     bucket  = aws_s3_bucket.alb_logs.id
@@ -49,7 +51,7 @@ resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.main.arn
   port              = "443"
   protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  ssl_policy = "ELBSecurityPolicy-FS-1-2-Res-2020-10" # For better compatibility with Cloudflare
   certificate_arn   = var.certificate_arn
 
   default_action {

@@ -42,6 +42,33 @@ resource "aws_security_group" "alb" {
   })
 }
 
+resource "aws_security_group_rule" "alb_cloudflare_https" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  security_group_id = aws_security_group.alb.id
+  
+  # Cloudflare IP ranges
+  cidr_blocks = [
+    "173.245.48.0/20",
+    "103.21.244.0/22",
+    "103.22.200.0/22",
+    "103.31.4.0/22",
+    "141.101.64.0/18",
+    "108.162.192.0/18",
+    "190.93.240.0/20",
+    "188.114.96.0/20",
+    "197.234.240.0/22",
+    "198.41.128.0/17",
+    "162.158.0.0/15",
+    "104.16.0.0/13",
+    "104.24.0.0/14",
+    "172.64.0.0/13",
+    "131.0.72.0/22"
+  ]
+}
+
 # Frontend Security Group
 resource "aws_security_group" "frontend" {
   name        = "${local.name_prefix}-frontend-sg"
