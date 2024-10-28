@@ -18,3 +18,8 @@ variable "subject_alternative_names" {
   description = "Additional domain names for the certificate"
   default     = []
 }
+
+variable "cloudflare_zone_id" {
+  type        = string
+  description = "Cloudflare Zone ID"
+}
