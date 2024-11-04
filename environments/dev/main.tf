@@ -114,7 +114,7 @@ module "frontend_service" {
   container_image_tag = var.frontend_image.tag
   backend_service_url = "api.${local.app_domain}"
 
-  container_port = 80
+  container_port = 8080
   container_cpu = 256
   container_memory = 512
   desired_count = 2
@@ -127,8 +127,8 @@ module "frontend_service" {
       value = var.environment
     },
     {
-      name  = "API_URL"
-      value = "https://api.${local.app_domain}"
+      name  = "APP_API_URL"
+      value = "https://api-${local.app_domain}"
     }
   ]
 }
