@@ -8,11 +8,6 @@ variable "environment" {
   description = "Environment name"
 }
 
-variable "root_domain" {
-  type        = string
-  description = "Root domain (e.g., example.com)"
-}
-
 variable "cloudflare_zone_id" {
   type        = string
   description = "Cloudflare Zone ID"
