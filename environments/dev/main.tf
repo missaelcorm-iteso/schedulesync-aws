@@ -55,7 +55,6 @@ module "backend_service" {
 
   project     = var.project
   environment = var.environment
-  vpc_id      = module.networking.vpc_id
 
   ecs_cluster_id = module.ecs_cluster.cluster_id
   private_subnet_ids = module.networking.private_subnet_ids
