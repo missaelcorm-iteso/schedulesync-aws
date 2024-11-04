@@ -44,7 +44,8 @@ module "alb" {
   public_subnet_ids    = module.networking.public_subnet_ids
   security_group_id    = module.security.alb_security_group_id
   certificate_arn      = module.acm.certificate_validation_arn
-  domain_name          = local.app_domain
+  app_domain           = local.app_domain
+  backend_health_check_path = "/"
 
   depends_on = [module.acm]
 }
@@ -61,6 +62,7 @@ module "backend_service" {
   security_group_id = module.security.backend_security_group_id
   execution_role_arn = module.security.ecs_task_execution_backend_role_arn
   task_role_arn = module.security.backend_task_role_arn
+  health_check_path = "/"
 
   service_discovery_namespace_id = module.ecs_cluster.service_discovery_namespace_id
   alb_target_group_arn = module.alb.backend_target_group_arn
