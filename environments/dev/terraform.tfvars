@@ -8,12 +8,12 @@ vpc_cidr = "10.0.0.0/16"
 availability_zones = ["us-west-2a", "us-west-2b"]
 
 frontend_image = {
-  repository_url = "public.ecr.aws/nginx/nginx"
+  repository_url = "missaelcorm/schedulesync-web"
   tag           = "latest"
 }
 
 backend_image = {
-  repository_url = "public.ecr.aws/nginx/nginx"
+  repository_url = "missaelcorm/schedulesync-api"
   tag           = "latest"
 }
 
