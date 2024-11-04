@@ -60,7 +60,7 @@ module "backend_service" {
   ecs_cluster_id = module.ecs_cluster.cluster_id
   private_subnet_ids = module.networking.private_subnet_ids
   security_group_id = module.security.backend_security_group_id
-  execution_role_arn = module.security.ecs_task_execution_role_arn
+  execution_role_arn = module.security.ecs_task_execution_backend_role_arn
   task_role_arn = module.security.backend_task_role_arn
 
   service_discovery_namespace_id = module.ecs_cluster.service_discovery_namespace_id
@@ -78,15 +78,35 @@ module "backend_service" {
       value = var.environment
     },
     {
-      name  = "PORT"
+      name  = "APP_PORT"
       value = "3000"
     }
   ]
 
   secrets = [
     {
-      name      = "DATABASE_URL"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/database_url"
+      name      = "MONGO_PROTOCOL"
+      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_protocol"
+    },
+    {
+      name      = "MONGO_HOST"
+      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_host"
+    },
+    {
+      name      = "MONGO_DB"
+      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_db"
+    },
+    {
+      name      = "MONGO_USER"
+      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_user"
+    },
+    {
+      name      = "MONGO_PASS"
+      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_pass"
+    },
+    {
+      name      = "SECRET_KEY"
+      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/secret_key"
     }
   ]
 
@@ -105,7 +125,7 @@ module "frontend_service" {
   security_group_id = module.security.frontend_security_group_id
   alb_target_group_arn = module.alb.frontend_target_group_arn
   alb_listener_arn     = module.alb.https_listener_arn
-  execution_role_arn = module.security.ecs_task_execution_role_arn
+  execution_role_arn = module.security.ecs_task_execution_frontend_role_arn
   task_role_arn = module.security.frontend_task_role_arn
 
   ecr_repository_url = var.frontend_image.repository_url

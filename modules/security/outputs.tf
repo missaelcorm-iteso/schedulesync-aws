@@ -13,9 +13,14 @@ output "backend_security_group_id" {
   value       = aws_security_group.backend.id
 }
 
-output "ecs_task_execution_role_arn" {
+output "ecs_task_execution_frontend_role_arn" {
   description = "ARN of the ECS task execution role"
-  value       = aws_iam_role.ecs_task_execution.arn
+  value       = aws_iam_role.ecs_task_execution_frontend.arn
+}
+
+output "ecs_task_execution_backend_role_arn" {
+  description = "ARN of the ECS task execution role"
+  value       = aws_iam_role.ecs_task_execution_backend.arn
 }
 
 output "frontend_task_role_arn" {

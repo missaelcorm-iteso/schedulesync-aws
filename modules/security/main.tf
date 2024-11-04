@@ -122,8 +122,8 @@ resource "aws_security_group" "backend" {
 }
 
 # ECS Task Execution Role
-resource "aws_iam_role" "ecs_task_execution" {
-  name = "${local.name_prefix}-ecs-execution"
+resource "aws_iam_role" "ecs_task_execution_frontend" {
+  name = "${local.name_prefix}-ecs-execution-frontend"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -141,8 +141,32 @@ resource "aws_iam_role" "ecs_task_execution" {
   tags = local.common_tags
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
-  role       = aws_iam_role.ecs_task_execution.name
+resource "aws_iam_role" "ecs_task_execution_backend" {
+  name = "${local.name_prefix}-ecs-execution-backend"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = local.common_tags
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_frontend" {
+  role       = aws_iam_role.ecs_task_execution_frontend.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_backend" {
+  role       = aws_iam_role.ecs_task_execution_backend.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
@@ -210,7 +234,7 @@ resource "aws_iam_role" "backend_task" {
 
 resource "aws_iam_role_policy" "backend_task" {
   name = "${local.name_prefix}-backend-task-policy"
-  role = aws_iam_role.backend_task.id
+  role = aws_iam_role.ecs_task_execution_backend.id
 
   policy = jsonencode({
     Version = "2012-10-17"
