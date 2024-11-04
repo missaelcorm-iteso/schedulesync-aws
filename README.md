@@ -83,3 +83,17 @@ terraform plan
 ```shell
 terraform apply
 ```
+
+## Terraform
+
+### tflint
+
+```shell
+tflint --recursive --config $(pwd)/.tflint.hcl 
+```
+
+### Terraform apply
+
+```shell
+terraform apply -var-file secrets.tfvars
+```
