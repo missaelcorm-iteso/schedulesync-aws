@@ -80,30 +80,10 @@ resource "aws_ecs_service" "backend" {
   deployment_controller {
     type = "ECS"
   }
-  
+
   depends_on = [var.alb_listener_arn]
 
   tags = local.common_tags
-}
-
-# Service Discovery
-resource "aws_service_discovery_service" "backend" {
-  name = "backend"
-
-  dns_config {
-    namespace_id = var.service_discovery_namespace_id
-
-    dns_records {
-      ttl  = 10
-      type = "A"
-    }
-
-    routing_policy = "MULTIVALUE"
-  }
-
-  health_check_custom_config {
-    failure_threshold = 1
-  }
 }
 
 # Auto Scaling
