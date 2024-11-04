@@ -1,5 +1,9 @@
 terraform {
   required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
     cloudflare = {
       source  = "cloudflare/cloudflare"
       version = "~> 4.0"
@@ -22,8 +26,7 @@ locals {
 resource "aws_acm_certificate" "main" {
   domain_name = local.domain_name
   subject_alternative_names = [
-    "*.${local.domain_name}",
-    "api.${local.domain_name}"
+    "api-${local.domain_name}"
   ]
   validation_method         = "DNS"
 
@@ -48,11 +51,12 @@ resource "cloudflare_record" "acm_validation" {
   }
 
   zone_id = var.cloudflare_zone_id
-  name    = each.value.name
+  name    = trimsuffix(each.value.name, ".${var.root_domain}.")
   value = each.value.record
   type    = each.value.type
   ttl     = 60
   proxied = false # Important: DNS validation records should not be proxied
+  allow_overwrite = true
 
   lifecycle {
     create_before_destroy = true

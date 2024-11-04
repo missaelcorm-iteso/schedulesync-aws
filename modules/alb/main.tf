@@ -122,8 +122,8 @@ resource "aws_lb_listener_rule" "backend" {
   }
 
   condition {
-    path_pattern {
-      values = ["/api/*"]
+    host_header {
+      values = ["api-${var.app_domain}"]
     }
   }
 }

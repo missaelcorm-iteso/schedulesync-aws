@@ -40,7 +40,7 @@ variable "backend_health_check_path" {
   default     = "/health"
 }
 
-variable "domain_name" {
+variable "app_domain" {
   type        = string
-  description = "Domain name for the application"
+  description = "App domain"
 }

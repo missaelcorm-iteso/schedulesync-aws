@@ -13,7 +13,7 @@ locals {
       value = var.environment
     },
     {
-      name  = "API_URL"
+      name  = "APP_API_URL"
       value = "https://${var.backend_service_url}"
     }
   ]
