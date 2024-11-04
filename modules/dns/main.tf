@@ -16,7 +16,7 @@ locals {
 resource "cloudflare_record" "main" {
   zone_id = var.cloudflare_zone_id
   name    = local.app_domain # This will create schedulesync-dev.domain.com
-  value   = var.alb_dns_name
+  content   = var.alb_dns_name
   type    = "CNAME"
   proxied = var.enable_proxy
   allow_overwrite = true
@@ -27,7 +27,7 @@ resource "cloudflare_record" "main" {
 resource "cloudflare_record" "api" {
   zone_id = var.cloudflare_zone_id
   name    = "api-${local.app_domain}" # This will create *.schedulesync-dev.yourdomain.com
-  value   = var.alb_dns_name
+  content   = var.alb_dns_name
   type    = "CNAME"
   proxied = var.enable_proxy
   allow_overwrite = true
