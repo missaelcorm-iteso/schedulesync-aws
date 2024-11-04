@@ -16,5 +16,3 @@ backend_image = {
   repository_url = "missaelcorm/schedulesync-api"
   tag           = "latest"
 }
-
-certificate_arn = "arn:aws:acm:us-west-2:123456789012:certificate/12345678-1234-1234-1234-123456789012"
