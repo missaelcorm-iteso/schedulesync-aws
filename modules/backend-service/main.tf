@@ -66,8 +66,10 @@ resource "aws_ecs_service" "backend" {
     security_groups = [var.security_group_id]
   }
 
-  service_registries {
-    registry_arn = aws_service_discovery_service.backend.arn
+  load_balancer {
+    target_group_arn = var.alb_target_group_arn
+    container_name   = "backend"
+    container_port   = var.container_port
   }
 
   deployment_circuit_breaker {
@@ -78,6 +80,8 @@ resource "aws_ecs_service" "backend" {
   deployment_controller {
     type = "ECS"
   }
+  
+  depends_on = [var.alb_listener_arn]
 
   tags = local.common_tags
 }

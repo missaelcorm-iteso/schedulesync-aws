@@ -33,6 +33,16 @@ variable "task_role_arn" {
   description = "ECS task role ARN"
 }
 
+variable "alb_target_group_arn" {
+  type        = string
+  description = "ALB target group ARN"
+}
+
+variable "alb_listener_arn" {
+  type        = string
+  description = "ARN of the ALB listener"
+}
+
 variable "service_discovery_namespace_id" {
   type        = string
   description = "Service discovery namespace ID"

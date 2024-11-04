@@ -63,6 +63,8 @@ module "backend_service" {
   task_role_arn = module.security.backend_task_role_arn
 
   service_discovery_namespace_id = module.ecs_cluster.service_discovery_namespace_id
+  alb_target_group_arn = module.alb.backend_target_group_arn
+  alb_listener_arn     = module.alb.https_listener_arn
   ecr_repository_url = var.backend_image.repository_url
   container_image_tag = var.backend_image.tag
 
