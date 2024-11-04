@@ -49,11 +49,6 @@ variable "backend_image" {
   description = "Backend container image details"
 }
 
-variable "certificate_arn" {
-  type        = string
-  description = "ARN of the SSL certificate"
-}
-
 variable "cloudflare_api_token" {
   type        = string
   description = "Cloudflare API Token"

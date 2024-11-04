@@ -22,7 +22,6 @@ module "security" {
   project     = var.project
   environment = var.environment
   vpc_id      = module.networking.vpc_id
-  vpc_cidr    = var.vpc_cidr
 }
 
 # ECS Cluster
@@ -100,7 +99,6 @@ module "frontend_service" {
 
   project     = var.project
   environment = var.environment
-  vpc_id      = module.networking.vpc_id
 
   ecs_cluster_id = module.ecs_cluster.cluster_id
   private_subnet_ids = module.networking.private_subnet_ids
@@ -139,7 +137,6 @@ module "dns" {
 
   project            = var.project
   environment        = var.environment
-  root_domain        = var.root_domain
   cloudflare_zone_id = var.cloudflare_zone_id
   alb_dns_name       = module.alb.alb_dns_name
   enable_proxy       = true
@@ -152,7 +149,6 @@ module "acm" {
   environment = var.environment
   root_domain  = var.root_domain
   cloudflare_zone_id      = var.cloudflare_zone_id
-  cloudflare_api_token = var.cloudflare_api_token
 }
 
 # Data sources

@@ -8,11 +8,6 @@ variable "environment" {
   description = "Environment name"
 }
 
-variable "vpc_id" {
-  type        = string
-  description = "VPC ID"
-}
-
 variable "private_subnet_ids" {
   type        = list(string)
   description = "List of private subnet IDs"
