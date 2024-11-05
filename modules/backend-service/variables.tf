@@ -43,11 +43,6 @@ variable "alb_listener_arn" {
   description = "ARN of the ALB listener"
 }
 
-variable "service_discovery_namespace_id" {
-  type        = string
-  description = "Service discovery namespace ID"
-}
-
 variable "ecr_repository_url" {
   type        = string
   description = "ECR repository URL for the container image"
