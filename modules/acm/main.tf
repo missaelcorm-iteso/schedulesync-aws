@@ -52,7 +52,7 @@ resource "cloudflare_record" "acm_validation" {
 
   zone_id = var.cloudflare_zone_id
   name    = trimsuffix(each.value.name, ".${var.root_domain}.")
-  value = each.value.record
+  content = each.value.record
   type    = each.value.type
   ttl     = 60
   proxied = false # Important: DNS validation records should not be proxied
