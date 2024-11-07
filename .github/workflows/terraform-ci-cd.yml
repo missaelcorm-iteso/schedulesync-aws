@@ -45,7 +45,7 @@ jobs:
         id: validate
         working-directory: ${{ github.workspace }}/environments/dev
         run: |
-          terraform validate -input=false
+          terraform validate
 
       - name: Terraform Security Check
         id: tfsec
