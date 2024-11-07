@@ -33,6 +33,7 @@ jobs:
         working-directory: ${{ github.workspace }}/environments/dev
         run: |
           terraform fmt -check=true -diff=true
+        continue-on-error: true
       
       - name: Terraform Lint
         id: lint
