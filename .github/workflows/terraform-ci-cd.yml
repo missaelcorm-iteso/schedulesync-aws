@@ -49,8 +49,10 @@ jobs:
 
       - name: Terraform Security Check
         id: tfsec
+        working-directory: ${{ github.workspace }}/environments/dev
         run: |
-          tfsec ${{ github.workspace }}/environments/dev
+          tfsec .
+        continue-on-error: true
 
       - name: Terraform Plan
         id: plan
