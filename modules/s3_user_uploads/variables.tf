@@ -24,3 +24,8 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "backend_task_role_arn" {
+  description = "ARN of the ECS task role"
+  type        = string
+}

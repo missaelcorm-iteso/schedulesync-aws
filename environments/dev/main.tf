@@ -184,6 +184,7 @@ module "s3_user_uploads" {
   bucket_name = "${var.project}-${var.environment}-user-uploads"
   environment = var.environment
   project     = var.project
+  backend_task_role_arn = module.security.backend_task_role_arn
   allowed_origins = [
     "http://localhost:${module.backend_service.container_port}",
     "https://*${local.app_domain}"
