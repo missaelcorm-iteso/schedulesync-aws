@@ -234,6 +234,31 @@ resource "aws_iam_role" "backend_task" {
 
 resource "aws_iam_role_policy" "backend_task" {
   name = "${local.name_prefix}-backend-task-policy"
+  role = aws_iam_role.backend_task.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:PutObjectAcl",
+          "s3:GetObject",
+          "s3:DeleteObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          var.s3_user_uploads_bucket_arn,
+          "${var.s3_user_uploads_bucket_arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "backend_task" {
+  name = "${local.name_prefix}-backend-task-policy"
   role = aws_iam_role.ecs_task_execution_backend.id
 
   policy = jsonencode({
@@ -242,17 +267,10 @@ resource "aws_iam_role_policy" "backend_task" {
       {
         Effect = "Allow"
         Action = [
-          "ssm:GetParameters",
-          "s3:PutObject",
-          "s3:PutObjectAcl",
-          "s3:GetObject",
-          "s3:DeleteObject",
-          "s3:ListBucket"
+          "ssm:GetParameters"
         ]
         Resource = [
-          "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/*",
-          var.s3_user_uploads_bucket_arn,
-          "${var.s3_user_uploads_bucket_arn}/*"
+          "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/*"
         ]
       }
     ]
