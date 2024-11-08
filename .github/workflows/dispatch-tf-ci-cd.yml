@@ -26,6 +26,7 @@ jobs:
       cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
   terraform-cd:
+    needs: terraform-ci
     if: ${{ github.event.inputs.trigger_cd == 'true' }}
     uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-cd.yml@main
     with:
