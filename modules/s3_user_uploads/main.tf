@@ -16,16 +16,16 @@ resource "aws_s3_bucket" "user_uploads" {
 }
 
 # Enable versioning for recovery
-resource "aws_s3_bucket_versioning" "user_photos" {
-  bucket = aws_s3_bucket.user_photos.id
+resource "aws_s3_bucket_versioning" "user_uploads" {
+  bucket = aws_s3_bucket.user_uploads.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
 # Configure public access
-resource "aws_s3_bucket_public_access_block" "user_photos" {
-  bucket = aws_s3_bucket.user_photos.id
+resource "aws_s3_bucket_public_access_block" "user_uploads" {
+  bucket = aws_s3_bucket.user_uploads.id
 
   block_public_acls       = false
   block_public_policy     = false
@@ -34,8 +34,8 @@ resource "aws_s3_bucket_public_access_block" "user_photos" {
 }
 
 # Bucket policy for public read
-resource "aws_s3_bucket_policy" "user_photos" {
-  bucket = aws_s3_bucket.user_photos.id
+resource "aws_s3_bucket_policy" "user_uploads" {
+  bucket = aws_s3_bucket.user_uploads.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -44,16 +44,16 @@ resource "aws_s3_bucket_policy" "user_photos" {
         Effect    = "Allow"
         Principal = "*"
         Action    = ["s3:GetObject"]
-        Resource  = ["${aws_s3_bucket.user_photos.arn}/*"]
+        Resource  = ["${aws_s3_bucket.user_uploads.arn}/*"]
       }
     ]
   })
-  depends_on = [aws_s3_bucket_public_access_block.user_photos]
+  depends_on = [aws_s3_bucket_public_access_block.user_uploads]
 }
 
 # Optional: Configure CORS if needed for direct frontend access
-resource "aws_s3_bucket_cors_configuration" "user_photos" {
-  bucket = aws_s3_bucket.user_photos.id
+resource "aws_s3_bucket_cors_configuration" "user_uploads" {
+  bucket = aws_s3_bucket.user_uploads.id
 
   cors_rule {
     allowed_headers = ["*"]
