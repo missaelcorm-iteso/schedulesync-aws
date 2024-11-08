@@ -1,0 +1,79 @@
+name: Terraform CI
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: 'Working Directory'
+        required: true
+        type: string
+      aws_access_key_id:
+        description: 'AWS Access Key ID'
+        required: true
+        type: string
+      aws_secret_access_key:
+        description: 'AWS Secret Access Key'
+        required: true
+        type: string
+      cloudflare_api_token:
+        description: 'Cloudflare API Token'
+        required: true
+        type: string
+    
+jobs:
+  terraform-ci:
+    runs-on: ubuntu-latest
+    container: "missaelcorm/terratool:v0.10"
+    env:
+      TF_LOG: INFO
+      AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+      TF_VAR_cloudflare_api_token: ${{ inputs.cloudflare_api_token }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Terraform Init
+        id: init
+        working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
+        run: |
+          terraform init -input=false
+          
+      - name: Terraform Format
+        id: fmt
+        working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
+        run: |
+          terraform fmt -check=true -diff=true
+        continue-on-error: true
+      
+      - name: Terraform Lint
+        id: lint
+        run: |
+          tflint --init
+          tflint --recursive --config $(pwd)/.tflint.hcl 
+
+      - name: Terraform Validate
+        id: validate
+        working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
+        run: |
+          terraform validate
+
+      - name: Terraform Security Check
+        id: tfsec
+        working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
+        run: |
+          tfsec .
+        continue-on-error: true
+
+      - name: Terraform Plan
+        id: plan
+        working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
+        run: |
+          terraform plan -input=false -compact-warnings -out=tfplan
+        
+      - name: Upload Terraform Plan Artifact
+        id: upload
+        uses: actions/upload-artifact@master
+        with:
+          name: tfplan
+          path: ${{ github.workspace }}/${{ inputs.working-directory }}/tfplan
