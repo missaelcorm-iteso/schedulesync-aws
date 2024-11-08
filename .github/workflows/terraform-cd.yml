@@ -1,5 +1,5 @@
 
-name: Terraform CI
+name: Terraform CD
 
 on:
   workflow_call:
