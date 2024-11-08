@@ -257,7 +257,7 @@ resource "aws_iam_role_policy" "backend_task" {
   })
 }
 
-resource "aws_iam_role_policy" "backend_task" {
+resource "aws_iam_role_policy" "execution_backend_task" {
   name = "${local.name_prefix}-backend-task-policy"
   role = aws_iam_role.ecs_task_execution_backend.id
 
