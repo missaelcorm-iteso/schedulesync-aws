@@ -22,6 +22,7 @@ module "security" {
   project     = var.project
   environment = var.environment
   vpc_id      = module.networking.vpc_id
+  s3_user_uploads_bucket_arn = module.s3_user_uploads.bucket_arn
 }
 
 # ECS Cluster
@@ -82,6 +83,10 @@ module "backend_service" {
     {
       name  = "APP_PORT"
       value = "3000"
+    },
+    {
+      name: "S3_BUCKET_NAME"
+      value: module.s3_user_uploads.bucket_name
     }
   ]
 
@@ -153,7 +158,7 @@ module "frontend_service" {
   ]
 }
 
-# Route 53 DNS Records
+# Cloudflare DNS Records
 module "dns" {
   source = "../../modules/dns"
 
@@ -171,6 +176,18 @@ module "acm" {
   environment = var.environment
   root_domain  = var.root_domain
   cloudflare_zone_id      = var.cloudflare_zone_id
+}
+
+module "s3_user_uploads" {
+  source = "../../modules/s3_user_uploads"
+
+  bucket_name = "${var.project}-${var.environment}-user-uploads"
+  environment = var.environment
+  project     = var.project
+  allowed_origins = [
+    "http://localhost:${module.backend_service.container_port}",
+    "https://*${local.app_domain}"
+  ]
 }
 
 # Data sources

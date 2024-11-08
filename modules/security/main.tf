@@ -243,16 +243,16 @@ resource "aws_iam_role_policy" "backend_task" {
         Effect = "Allow"
         Action = [
           "ssm:GetParameters",
-          "secretsmanager:GetSecretValue",
-          "s3:GetObject",
           "s3:PutObject",
+          "s3:PutObjectAcl",
+          "s3:GetObject",
+          "s3:DeleteObject",
           "s3:ListBucket"
         ]
         Resource = [
           "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/*",
-          "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.project}/${var.environment}/*",
-          "arn:aws:s3:::${var.project}-${var.environment}-*",
-          "arn:aws:s3:::${var.project}-${var.environment}-*/*"
+          var.s3_user_uploads_bucket_arn,
+          "${var.s3_user_uploads_bucket_arn}/*"
         ]
       }
     ]
