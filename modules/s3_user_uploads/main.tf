@@ -8,6 +8,7 @@ locals {
 
 resource "aws_s3_bucket" "user_uploads" {
   bucket = var.bucket_name
+  force_destroy = true
 
   tags = merge(
     var.tags,
