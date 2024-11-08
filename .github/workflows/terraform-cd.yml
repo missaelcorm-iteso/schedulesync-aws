@@ -8,18 +8,16 @@ on:
         description: 'Working Directory'
         required: true
         type: string
+    secrets:
       aws_access_key_id:
         description: 'AWS Access Key ID'
         required: true
-        type: string
       aws_secret_access_key:
         description: 'AWS Secret Access Key'
         required: true
-        type: string
       cloudflare_api_token:
         description: 'Cloudflare API Token'
         required: true
-        type: string
 
 jobs:
   terraform-ci:
@@ -27,9 +25,9 @@ jobs:
     container: "missaelcorm/terratool:v0.10"
     env:
       TF_LOG: INFO
-      AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
-      AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
-      TF_VAR_cloudflare_api_token: ${{ inputs.cloudflare_api_token }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_access_key }}
+      TF_VAR_cloudflare_api_token: ${{ secrets.cloudflare_api_token }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
