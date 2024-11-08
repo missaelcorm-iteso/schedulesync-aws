@@ -86,6 +86,14 @@ terraform apply
 
 ## Terraform
 
+### Terratool
+This tool is dockerized using [Dockerfile](./Dockerfile) currently stored in this repository: [missaelcorm/terratool](https://hub.docker.com/r/missaelcorm/terratool)
+
+This tool contains all necessary tools for Terraform CI such as:
+- [terraform](https://www.terraform.io/)
+- [tflint](https://github.com/terraform-linters/tflint)
+- [tfsec](https://github.com/aquasecurity/tfsec)
+
 ### tflint
 
 ```shell
