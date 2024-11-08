@@ -62,7 +62,7 @@ jobs:
       
       - name: Terraform Apply
         id: apply
-        if: ${{ github.event.inputs.trigger_cd == true }}
+        if: ${{ inputs.trigger_cd == 'true' }}
         working-directory: ${{ github.workspace }}/environments/dev
         run: |
           terraform apply -input=false -auto-approve plan.file
