@@ -10,7 +10,7 @@ on:
         default: false
 
 jobs:
-  terraform-ci:
+  terraform-destroy:
     runs-on: ubuntu-latest
     container: "missaelcorm/terratool:v0.10"
     env:
