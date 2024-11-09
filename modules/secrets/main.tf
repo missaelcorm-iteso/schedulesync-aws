@@ -13,7 +13,7 @@ resource "random_string" "master_username" {
   upper   = false
 }
 
-resource "aws_secretsmanager_random_password" "master_password" {
+data "aws_secretsmanager_random_password" "master_password" {
   password_length = 24
   exclude_numbers = false 
   exclude_punctuation = true 
