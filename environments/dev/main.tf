@@ -197,5 +197,26 @@ module "s3_user_uploads" {
   ]
 }
 
+module "secrets" {
+  source = "../../modules/secrets"
+
+  project     = var.project
+  environment = var.environment
+  docdb_host  = module.documentdb.cluster_endpoint
+  docdb_port  = module.documentdb.cluster_port
+}
+
+module "documentdb" {
+  source = "../../modules/documentdb"
+
+  project          = var.project
+  environment      = var.environment
+  master_username  = module.secrets.docdb_credentials_master_username
+  master_password  = module.secrets.docdb_credentials_master_password
+  documentdb_sg_id = module.security.documentdb_security_group_id
+  subnet_ids       = module.networking.docdb_private_subnet_ids
+  vpc_id           = module.networking.vpc_id
+}
+
 # Data sources
 data "aws_caller_identity" "current" {}
