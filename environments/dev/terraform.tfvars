@@ -14,5 +14,5 @@ frontend_image = {
 
 backend_image = {
   repository_url = "missaelcorm/schedulesync-api"
-  tag           = "v0.13"
+  tag           = "v0.14"
 }
