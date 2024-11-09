@@ -8,7 +8,7 @@ locals {
   }
 }
 
-resource "random_string" " " {
+resource "random_string" "master_username" {
   length  = 8
   special = false
   numeric = false
