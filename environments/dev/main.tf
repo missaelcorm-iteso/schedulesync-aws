@@ -87,6 +87,10 @@ module "backend_service" {
     {
       name: "S3_BUCKET_NAME"
       value: module.s3_user_uploads.bucket_name
+    },
+    {
+      name: "AWS_REGION"
+      value: var.aws_region
     }
   ]
 
