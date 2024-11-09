@@ -215,6 +215,12 @@ module "documentdb" {
   master_password  = module.secrets.docdb_credentials_master_password
   documentdb_sg_id = module.security.documentdb_security_group_id
   subnet_ids       = module.networking.docdb_private_subnet_ids
+
+  instance_class = "db.t3.medium"
+  instance_count = 1
+
+  backup_retention_period = 7
+  deletion_protection    = false
 }
 
 # Data sources
