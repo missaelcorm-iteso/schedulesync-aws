@@ -31,3 +31,9 @@ variable "public_subnets" {
   description = "CIDR blocks for public subnets"
   default     = ["10.0.15.0/24", "10.0.25.0/24"]
 }
+
+variable "docdb_subnets" {
+  type        = list(string)
+  description = "CIDR blocks for DocumentDB subnets"
+  default     = ["10.0.50.0/25", "10.0.50.128/25"]
+}
