@@ -14,7 +14,7 @@ resource "aws_docdb_subnet_group" "default" {
 }
 
 resource "aws_docdb_cluster_parameter_group" "default" {
-  family      = "docdb4.0"
+  family      = "docdb5.0"
   name        = "${var.project}-${var.environment}-docdb"
   description = "DocumentDB cluster parameter group for ${var.project}-${var.environment}"
 
