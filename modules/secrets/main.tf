@@ -33,7 +33,7 @@ resource "aws_secretsmanager_secret_version" "docdb_credentials" {
   secret_id = aws_secretsmanager_secret.docdb_credentials.id
   secret_string = jsonencode({
     username = random_string.master_username.result
-    password = aws_secretsmanager_random_password.master_password.random_password
+    password = data.aws_secretsmanager_random_password.master_password.random_password
     host     = var.docdb_host
     port     = var.docdb_port
     dbname   = var.docdb_name
