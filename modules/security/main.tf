@@ -277,6 +277,44 @@ resource "aws_iam_role_policy" "execution_backend_task" {
   })
 }
 
+resource "aws_iam_policy" "docdb_secret_access" {
+  name        = "${var.project}-${var.environment}-docdb-secret-access"
+  description = "Policy to access DocumentDB credentials in Secrets Manager"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ]
+        Resource = [var.aws_secretsmanager_secret_docdb_credentials_arn]
+      }
+    ]
+  })
+}
+
+resource "aws_security_group" "documentdb" {
+  name_prefix = "${var.project}-${var.environment}-docdb-"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 27017
+    to_port     = 27017
+    protocol    = "tcp"
+    security_groups = [aws_security_group.backend.id]
+  }
+
+  tags = local.common_tags
+}
+
+resource "aws_iam_role_policy_attachment" "docdb_secret_access" {
+  policy_arn = aws_iam_policy.docdb_secret_access.arn
+  role       = aws_iam_role.ecs_task_execution_backend.name
+}
+
 # Data sources for current region and account ID
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}

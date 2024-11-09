@@ -43,6 +43,19 @@ resource "aws_subnet" "public" {
   })
 }
 
+resource "aws_subnet" "docdb" {
+  count             = length(var.azs)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.docdb_subnets[count.index]
+  availability_zone = var.azs[count.index]
+
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-docdb-${var.azs[count.index]}"
+    Tier = "Private"
+  })
+  
+}
+
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
@@ -99,6 +112,20 @@ resource "aws_route_table" "private" {
   })
 }
 
+resource "aws_route_table" "docdb" {
+  count  = length(var.azs)
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.main[count.index].id
+  }
+
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-docdb-rt-${var.azs[count.index]}"
+  })
+}
+
 resource "aws_route_table_association" "private" {
   count          = length(var.azs)
   subnet_id      = aws_subnet.private[count.index].id
@@ -109,4 +136,10 @@ resource "aws_route_table_association" "public" {
   count          = length(var.azs)
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "docdb" {
+  count          = length(var.azs)
+  subnet_id      = aws_subnet.docdb[count.index].id
+  route_table_id = aws_route_table.docdb[count.index].id
 }

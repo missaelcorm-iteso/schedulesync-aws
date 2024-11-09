@@ -32,3 +32,8 @@ output "backend_task_role_arn" {
   description = "ARN of the backend task role"
   value       = aws_iam_role.backend_task.arn
 }
+
+output "documentdb_security_group_id" {
+  description = "ID of the backend service security group"
+  value       = aws_security_group.documentdb.id
+}

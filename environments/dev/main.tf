@@ -13,6 +13,7 @@ module "networking" {
   azs              = var.availability_zones
   private_subnets  = [for k, v in var.availability_zones : cidrsubnet(var.vpc_cidr, 4, k)]
   public_subnets   = [for k, v in var.availability_zones : cidrsubnet(var.vpc_cidr, 4, k + 4)]
+  docdb_subnets   = [for k, v in var.availability_zones : cidrsubnet(var.vpc_cidr, 4, k + 8)]
 }
 
 # Security Groups
@@ -23,6 +24,7 @@ module "security" {
   environment = var.environment
   vpc_id      = module.networking.vpc_id
   s3_user_uploads_bucket_arn = module.s3_user_uploads.bucket_arn
+  aws_secretsmanager_secret_docdb_credentials_arn = module.secrets.docdb_secrets_manager_secret_arn
 }
 
 # ECS Cluster
@@ -193,6 +195,32 @@ module "s3_user_uploads" {
     "http://localhost:${module.backend_service.container_port}",
     "https://*${local.app_domain}"
   ]
+}
+
+module "secrets" {
+  source = "../../modules/secrets"
+
+  project     = var.project
+  environment = var.environment
+  docdb_host  = module.documentdb.cluster_endpoint
+  docdb_port  = module.documentdb.cluster_port
+}
+
+module "documentdb" {
+  source = "../../modules/documentdb"
+
+  project          = var.project
+  environment      = var.environment
+  master_username  = module.secrets.docdb_credentials_master_username
+  master_password  = module.secrets.docdb_credentials_master_password
+  documentdb_sg_id = module.security.documentdb_security_group_id
+  subnet_ids       = module.networking.docdb_private_subnet_ids
+
+  instance_class = "db.t3.medium"
+  instance_count = 1
+
+  backup_retention_period = 7
+  deletion_protection    = false
 }
 
 # Data sources
