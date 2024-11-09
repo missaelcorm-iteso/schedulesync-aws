@@ -8,11 +8,6 @@ variable "project" {
   type        = string
 }
 
-variable "vpc_id" {
-  description = "VPC ID where the DocumentDB cluster will be created"
-  type        = string
-}
-
 variable "subnet_ids" {
   description = "List of subnet IDs for the DocumentDB cluster"
   type        = list(string)
