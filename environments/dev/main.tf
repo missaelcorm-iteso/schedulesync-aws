@@ -215,7 +215,6 @@ module "documentdb" {
   master_password  = module.secrets.docdb_credentials_master_password
   documentdb_sg_id = module.security.documentdb_security_group_id
   subnet_ids       = module.networking.docdb_private_subnet_ids
-  vpc_id           = module.networking.vpc_id
 }
 
 # Data sources
