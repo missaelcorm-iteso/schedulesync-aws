@@ -24,6 +24,7 @@ module "security" {
   environment = var.environment
   vpc_id      = module.networking.vpc_id
   s3_user_uploads_bucket_arn = module.s3_user_uploads.bucket_arn
+  aws_secretsmanager_secret_docdb_credentials_arn = module.secrets.docdb_credentials_arn
 }
 
 # ECS Cluster
