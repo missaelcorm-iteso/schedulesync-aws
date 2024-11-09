@@ -13,6 +13,7 @@ module "networking" {
   azs              = var.availability_zones
   private_subnets  = [for k, v in var.availability_zones : cidrsubnet(var.vpc_cidr, 4, k)]
   public_subnets   = [for k, v in var.availability_zones : cidrsubnet(var.vpc_cidr, 4, k + 4)]
+  docdb_subnets   = [for k, v in var.availability_zones : cidrsubnet(var.vpc_cidr, 4, k + 8)]
 }
 
 # Security Groups
