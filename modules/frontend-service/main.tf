@@ -1,6 +1,6 @@
 locals {
   name_prefix = "${var.project}-${var.environment}"
-  
+
   common_tags = {
     Environment = var.environment
     Project     = var.project
@@ -29,16 +29,16 @@ resource "aws_ecs_task_definition" "frontend" {
   family                   = "${local.name_prefix}-frontend"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                     = var.container_cpu
-  memory                  = var.container_memory
-  execution_role_arn      = var.execution_role_arn
-  task_role_arn           = var.task_role_arn
+  cpu                      = var.container_cpu
+  memory                   = var.container_memory
+  execution_role_arn       = var.execution_role_arn
+  task_role_arn            = var.task_role_arn
 
   container_definitions = jsonencode([
     {
-      name         = "frontend"
-      image        = "${var.ecr_repository_url}:${var.container_image_tag}"
-      essential    = true
+      name      = "frontend"
+      image     = "${var.ecr_repository_url}:${var.container_image_tag}"
+      essential = true
       portMappings = [
         {
           containerPort = var.container_port
@@ -70,12 +70,12 @@ resource "aws_ecs_task_definition" "frontend" {
 
 # ECS Service
 resource "aws_ecs_service" "frontend" {
-  name                               = "${local.name_prefix}-frontend"
-  cluster                           = var.ecs_cluster_id
-  task_definition                   = aws_ecs_task_definition.frontend.arn
-  desired_count                     = var.desired_count
-  launch_type                       = "FARGATE"
-  platform_version                  = "LATEST"
+  name             = "${local.name_prefix}-frontend"
+  cluster          = var.ecs_cluster_id
+  task_definition  = aws_ecs_task_definition.frontend.arn
+  desired_count    = var.desired_count
+  launch_type      = "FARGATE"
+  platform_version = "LATEST"
 
   network_configuration {
     subnets         = var.private_subnet_ids
@@ -154,13 +154,13 @@ resource "aws_cloudwatch_metric_alarm" "frontend_cpu_high" {
   alarm_name          = "${local.name_prefix}-frontend-cpu-high"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"
-  metric_name        = "CPUUtilization"
-  namespace          = "AWS/ECS"
-  period             = "300"
-  statistic          = "Average"
-  threshold          = "85"
-  alarm_description  = "This metric monitors frontend ECS CPU utilization"
-  alarm_actions      = [] # Add SNS topic ARN if needed
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = "300"
+  statistic           = "Average"
+  threshold           = "85"
+  alarm_description   = "This metric monitors frontend ECS CPU utilization"
+  alarm_actions       = [] # Add SNS topic ARN if needed
 
   dimensions = {
     ClusterName = data.aws_ecs_cluster.main.cluster_name
@@ -174,13 +174,13 @@ resource "aws_cloudwatch_metric_alarm" "frontend_memory_high" {
   alarm_name          = "${local.name_prefix}-frontend-memory-high"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"
-  metric_name        = "MemoryUtilization"
-  namespace          = "AWS/ECS"
-  period             = "300"
-  statistic          = "Average"
-  threshold          = "85"
-  alarm_description  = "This metric monitors frontend ECS memory utilization"
-  alarm_actions      = [] # Add SNS topic ARN if needed
+  metric_name         = "MemoryUtilization"
+  namespace           = "AWS/ECS"
+  period              = "300"
+  statistic           = "Average"
+  threshold           = "85"
+  alarm_description   = "This metric monitors frontend ECS memory utilization"
+  alarm_actions       = [] # Add SNS topic ARN if needed
 
   dimensions = {
     ClusterName = data.aws_ecs_cluster.main.cluster_name

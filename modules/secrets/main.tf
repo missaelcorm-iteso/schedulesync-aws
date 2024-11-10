@@ -14,33 +14,33 @@ resource "random_string" "master_username" {
 }
 
 data "aws_secretsmanager_random_password" "master_password" {
-  password_length = 24
-  exclude_numbers = false 
-  exclude_punctuation = true 
-  include_space = false 
+  password_length     = 24
+  exclude_numbers     = false
+  exclude_punctuation = true
+  include_space       = false
 }
 
 resource "aws_secretsmanager_secret" "master_password" {
-  name = "${var.project}-${var.environment}-docdb-master-password"
-  description = "Master password for DocumentDB"
+  name                    = "${var.project}-${var.environment}-docdb-master-password"
+  description             = "Master password for DocumentDB"
   recovery_window_in_days = var.docdb_recovery_window_in_days
 
   tags = local.common_tags
 }
 
 resource "aws_secretsmanager_secret_version" "master_password" {
-  secret_id = aws_secretsmanager_secret.master_password.id
+  secret_id     = aws_secretsmanager_secret.master_password.id
   secret_string = data.aws_secretsmanager_random_password.master_password.random_password
 
   lifecycle {
-    ignore_changes = [ secret_string ]
+    ignore_changes = [secret_string]
   }
 }
 
 # Create Secrets Manager secret for DocumentDB credentials
 resource "aws_secretsmanager_secret" "docdb_credentials" {
-  name        = "${var.project}-${var.environment}-docdb-credentials"
-  description = "DocumentDB credentials for ${var.project}-${var.environment}"
+  name                    = "${var.project}-${var.environment}-docdb-credentials"
+  description             = "DocumentDB credentials for ${var.project}-${var.environment}"
   recovery_window_in_days = var.docdb_recovery_window_in_days
 
   tags = local.common_tags

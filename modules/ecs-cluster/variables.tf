@@ -28,20 +28,20 @@ variable "capacity_providers" {
 variable "default_capacity_provider_strategy" {
   type = list(object({
     capacity_provider = string
-    weight           = number
-    base             = number
+    weight            = number
+    base              = number
   }))
   description = "Default capacity provider strategy"
   default = [
     {
       capacity_provider = "FARGATE"
-      weight           = 1
-      base             = 1
+      weight            = 1
+      base              = 1
     },
     {
       capacity_provider = "FARGATE_SPOT"
-      weight           = 4
-      base             = 0
+      weight            = 4
+      base              = 0
     }
   ]
 }

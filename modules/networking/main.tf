@@ -1,6 +1,6 @@
 locals {
   name_prefix = "${var.project}-${var.environment}"
-  
+
   common_tags = {
     Environment = var.environment
     Project     = var.project
@@ -53,7 +53,7 @@ resource "aws_subnet" "docdb" {
     Name = "${local.name_prefix}-docdb-${var.azs[count.index]}"
     Tier = "Private"
   })
-  
+
 }
 
 resource "aws_internet_gateway" "main" {

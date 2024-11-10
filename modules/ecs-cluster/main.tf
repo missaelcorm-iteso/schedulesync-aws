@@ -1,6 +1,6 @@
 locals {
   name_prefix = "${var.project}-${var.environment}"
-  
+
   common_tags = {
     Environment = var.environment
     Project     = var.project
@@ -30,8 +30,8 @@ resource "aws_ecs_cluster_capacity_providers" "main" {
     for_each = var.default_capacity_provider_strategy
     content {
       capacity_provider = default_capacity_provider_strategy.value.capacity_provider
-      weight           = default_capacity_provider_strategy.value.weight
-      base             = default_capacity_provider_strategy.value.base
+      weight            = default_capacity_provider_strategy.value.weight
+      base              = default_capacity_provider_strategy.value.base
     }
   }
 }

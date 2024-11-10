@@ -19,8 +19,8 @@ resource "aws_docdb_cluster_parameter_group" "default" {
   description = "DocumentDB cluster parameter group for ${var.project}-${var.environment}"
 
   parameter {
-    name  = "tls"
-    value = var.tls_enabled ? "enabled" : "disabled"
+    name         = "tls"
+    value        = var.tls_enabled ? "enabled" : "disabled"
     apply_method = "pending-reboot"
   }
 
@@ -29,17 +29,17 @@ resource "aws_docdb_cluster_parameter_group" "default" {
 
 resource "aws_docdb_cluster" "default" {
   cluster_identifier              = "${var.project}-${var.environment}"
-  engine                         = "docdb"
-  master_username                = var.master_username
-  master_password                = var.master_password
-  backup_retention_period        = var.backup_retention_period
-  preferred_backup_window        = "07:00-09:00"
-  skip_final_snapshot           = true
-  deletion_protection           = var.deletion_protection
-  db_subnet_group_name          = aws_docdb_subnet_group.default.name
-  vpc_security_group_ids        = [var.documentdb_sg_id]
+  engine                          = "docdb"
+  master_username                 = var.master_username
+  master_password                 = var.master_password
+  backup_retention_period         = var.backup_retention_period
+  preferred_backup_window         = "07:00-09:00"
+  skip_final_snapshot             = true
+  deletion_protection             = var.deletion_protection
+  db_subnet_group_name            = aws_docdb_subnet_group.default.name
+  vpc_security_group_ids          = [var.documentdb_sg_id]
   db_cluster_parameter_group_name = aws_docdb_cluster_parameter_group.default.name
-  apply_immediately             = var.apply_immediately
+  apply_immediately               = var.apply_immediately
 
   tags = local.common_tags
 }

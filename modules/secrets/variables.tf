@@ -21,7 +21,7 @@ variable "docdb_port" {
 variable "docdb_name" {
   description = "DocumentDB database name"
   type        = string
-  default = "schedule_sync"
+  default     = "schedule_sync"
 }
 
 variable "docdb_recovery_window_in_days" {
