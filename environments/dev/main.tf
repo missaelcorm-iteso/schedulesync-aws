@@ -87,6 +87,14 @@ module "backend_service" {
       value = "3000"
     },
     {
+      name  = "MONGO_PROTOCOL"
+      value = "mongodb"
+    },
+    {
+      name  = "MONGO_ARGS"
+      value = "tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
+    },
+    {
       name: "S3_BUCKET_NAME"
       value: module.s3_user_uploads.bucket_name
     },
@@ -97,14 +105,6 @@ module "backend_service" {
   ]
 
   secrets = [
-    {
-      name      = "MONGO_PROTOCOL"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_protocol"
-    },
-    {
-      name      = "MONGO_ARGS"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_args"
-    },
     {
       name      = "MONGO_HOST"
       valueFrom = "${module.secrets.docdb_secrets_manager_secret_arn}:host::"
