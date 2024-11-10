@@ -103,19 +103,23 @@ module "backend_service" {
     },
     {
       name      = "MONGO_HOST"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_host"
+      valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:${module.secrets.docdb_secrets_manager_secret_name}:host::"
+    },
+    {
+      name      = "MONGO_PORT"
+      valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:${module.secrets.docdb_secrets_manager_secret_name}:port::"
     },
     {
       name      = "MONGO_DB"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_db"
+      valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:${module.secrets.docdb_secrets_manager_secret_name}:dbname::"
     },
     {
       name      = "MONGO_USER"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_user"
+      valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:${module.secrets.docdb_secrets_manager_secret_name}:username::"
     },
     {
       name      = "MONGO_PASS"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_pass"
+      valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:${module.secrets.docdb_secrets_manager_secret_name}:password::"
     },
     {
       name      = "SECRET_KEY"
