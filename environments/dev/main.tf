@@ -204,6 +204,7 @@ module "secrets" {
   environment = var.environment
   docdb_host  = module.documentdb.cluster_endpoint
   docdb_port  = module.documentdb.cluster_port
+  docdb_recovery_window_in_days = 0
 }
 
 module "documentdb" {
