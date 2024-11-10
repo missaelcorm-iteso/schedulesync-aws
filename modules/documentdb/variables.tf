@@ -43,6 +43,12 @@ variable "apply_immediately" {
   default     = false
 }
 
+variable "tls_enabled" {
+  description = "Enable TLS encryption"
+  type        = bool
+  default     = true
+}
+
 variable "master_username" {
   description = "Master username for DocumentDB cluster"
   type        = string

@@ -20,7 +20,7 @@ resource "aws_docdb_cluster_parameter_group" "default" {
 
   parameter {
     name  = "tls"
-    value = "disabled"
+    value = var.tls_enabled ? "enabled" : "disabled"
     apply_method = "immediate"
   }
 
