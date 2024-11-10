@@ -21,7 +21,7 @@ resource "aws_docdb_cluster_parameter_group" "default" {
   parameter {
     name  = "tls"
     value = var.tls_enabled ? "enabled" : "disabled"
-    apply_method = "immediate"
+    apply_method = "pending-reboot"
   }
 
   tags = local.common_tags
