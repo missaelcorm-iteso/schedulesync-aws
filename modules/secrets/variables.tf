@@ -23,3 +23,9 @@ variable "docdb_name" {
   type        = string
   default = "schedule_sync"
 }
+
+variable "docdb_recovery_window_in_days" {
+  description = "The number of days that AWS Secrets Manager waits before it can delete the secret"
+  type        = number
+  default     = 7
+}

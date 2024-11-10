@@ -24,6 +24,7 @@ data "aws_secretsmanager_random_password" "master_password" {
 resource "aws_secretsmanager_secret" "docdb_credentials" {
   name        = "${var.project}-${var.environment}-docdb-credentials"
   description = "DocumentDB credentials for ${var.project}-${var.environment}"
+  recovery_window_in_days = var.docdb_recovery_window_in_days
 
   tags = local.common_tags
 }
