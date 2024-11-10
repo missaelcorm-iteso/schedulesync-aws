@@ -21,7 +21,7 @@ resource "aws_docdb_cluster_parameter_group" "default" {
   parameter {
     name  = "tls"
     value = "disabled"
-    apply_method = "inmediate"
+    apply_method = "immediate"
   }
 
   tags = local.common_tags
