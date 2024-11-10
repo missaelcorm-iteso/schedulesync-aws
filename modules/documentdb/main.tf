@@ -20,7 +20,8 @@ resource "aws_docdb_cluster_parameter_group" "default" {
 
   parameter {
     name  = "tls"
-    value = "enabled"
+    value = "disabled"
+    apply_method = "inmediate"
   }
 
   tags = local.common_tags
@@ -38,6 +39,7 @@ resource "aws_docdb_cluster" "default" {
   db_subnet_group_name          = aws_docdb_subnet_group.default.name
   vpc_security_group_ids        = [var.documentdb_sg_id]
   db_cluster_parameter_group_name = aws_docdb_cluster_parameter_group.default.name
+  apply_immediately             = var.apply_immediately
 
   tags = local.common_tags
 }

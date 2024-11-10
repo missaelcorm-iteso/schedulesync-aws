@@ -230,6 +230,7 @@ module "documentdb" {
 
   backup_retention_period = 7
   deletion_protection    = false
+  apply_immediately = true
 }
 
 # Data sources

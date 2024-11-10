@@ -37,6 +37,12 @@ variable "deletion_protection" {
   default     = false
 }
 
+variable "apply_immediately" {
+  description = "Apply changes immediately"
+  type        = bool
+  default     = false
+}
+
 variable "master_username" {
   description = "Master username for DocumentDB cluster"
   type        = string
