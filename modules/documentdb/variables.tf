@@ -37,6 +37,18 @@ variable "deletion_protection" {
   default     = false
 }
 
+variable "apply_immediately" {
+  description = "Apply changes immediately"
+  type        = bool
+  default     = false
+}
+
+variable "tls_enabled" {
+  description = "Enable TLS encryption"
+  type        = bool
+  default     = true
+}
+
 variable "master_username" {
   description = "Master username for DocumentDB cluster"
   type        = string

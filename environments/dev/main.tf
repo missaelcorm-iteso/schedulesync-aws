@@ -87,6 +87,14 @@ module "backend_service" {
       value = "3000"
     },
     {
+      name  = "MONGO_PROTOCOL"
+      value = "mongodb"
+    },
+    {
+      name  = "MONGO_ARGS"
+      value = "tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
+    },
+    {
       name: "S3_BUCKET_NAME"
       value: module.s3_user_uploads.bucket_name
     },
@@ -98,24 +106,24 @@ module "backend_service" {
 
   secrets = [
     {
-      name      = "MONGO_PROTOCOL"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_protocol"
+      name      = "MONGO_HOST"
+      valueFrom = "${module.secrets.docdb_secrets_manager_secret_arn}:host::"
     },
     {
-      name      = "MONGO_HOST"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_host"
+      name      = "MONGO_PORT"
+      valueFrom = "${module.secrets.docdb_secrets_manager_secret_arn}:port::"
     },
     {
       name      = "MONGO_DB"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_db"
+      valueFrom = "${module.secrets.docdb_secrets_manager_secret_arn}:dbname::"
     },
     {
       name      = "MONGO_USER"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_user"
+      valueFrom = "${module.secrets.docdb_secrets_manager_secret_arn}:username::"
     },
     {
       name      = "MONGO_PASS"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_pass"
+      valueFrom = "${module.secrets.docdb_secrets_manager_secret_arn}:password::"
     },
     {
       name      = "SECRET_KEY"
@@ -222,6 +230,8 @@ module "documentdb" {
 
   backup_retention_period = 7
   deletion_protection    = false
+  apply_immediately = true
+  tls_enabled = true
 }
 
 # Data sources

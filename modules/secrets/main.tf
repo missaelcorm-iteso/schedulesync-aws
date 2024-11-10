@@ -20,6 +20,23 @@ data "aws_secretsmanager_random_password" "master_password" {
   include_space = false 
 }
 
+resource "aws_secretsmanager_secret" "master_password" {
+  name = "${var.project}-${var.environment}-docdb-master-password"
+  description = "Master password for DocumentDB"
+  recovery_window_in_days = var.docdb_recovery_window_in_days
+
+  tags = local.common_tags
+}
+
+resource "aws_secretsmanager_secret_version" "master_password" {
+  secret_id = aws_secretsmanager_secret.master_password.id
+  secret_string = data.aws_secretsmanager_random_password.master_password.random_password
+
+  lifecycle {
+    ignore_changes = [ secret_string ]
+  }
+}
+
 # Create Secrets Manager secret for DocumentDB credentials
 resource "aws_secretsmanager_secret" "docdb_credentials" {
   name        = "${var.project}-${var.environment}-docdb-credentials"
@@ -34,7 +51,7 @@ resource "aws_secretsmanager_secret_version" "docdb_credentials" {
   secret_id = aws_secretsmanager_secret.docdb_credentials.id
   secret_string = jsonencode({
     username = random_string.master_username.result
-    password = data.aws_secretsmanager_random_password.master_password.random_password
+    password = aws_secretsmanager_secret_version.master_password.secret_string
     host     = var.docdb_host
     port     = var.docdb_port
     dbname   = var.docdb_name
