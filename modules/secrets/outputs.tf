@@ -16,6 +16,6 @@ output "docdb_credentials_master_username" {
 
 output "docdb_credentials_master_password" {
   description = "Master password for DocumentDB"
-  value       = data.aws_secretsmanager_random_password.master_password.random_password
+  value       = aws_secretsmanager_secret_version.master_password.secret_string
   sensitive   = true
 }
