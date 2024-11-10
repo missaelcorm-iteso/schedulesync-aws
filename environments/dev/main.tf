@@ -102,6 +102,10 @@ module "backend_service" {
       valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_protocol"
     },
     {
+      name      = "MONGO_ARGS"
+      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/mongo_args"
+    },
+    {
       name      = "MONGO_HOST"
       valueFrom = "${module.secrets.docdb_secrets_manager_secret_arn}:host::"
     },
