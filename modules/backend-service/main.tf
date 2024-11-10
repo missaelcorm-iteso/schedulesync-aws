@@ -1,6 +1,6 @@
 locals {
   name_prefix = "${var.project}-${var.environment}"
-  
+
   common_tags = {
     Environment = var.environment
     Project     = var.project
@@ -13,16 +13,16 @@ resource "aws_ecs_task_definition" "backend" {
   family                   = "${local.name_prefix}-backend"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                     = var.container_cpu
-  memory                  = var.container_memory
-  execution_role_arn      = var.execution_role_arn
-  task_role_arn           = var.task_role_arn
+  cpu                      = var.container_cpu
+  memory                   = var.container_memory
+  execution_role_arn       = var.execution_role_arn
+  task_role_arn            = var.task_role_arn
 
   container_definitions = jsonencode([
     {
-      name         = "backend"
-      image        = "${var.ecr_repository_url}:${var.container_image_tag}"
-      essential    = true
+      name      = "backend"
+      image     = "${var.ecr_repository_url}:${var.container_image_tag}"
+      essential = true
       portMappings = [
         {
           containerPort = var.container_port
@@ -54,12 +54,12 @@ resource "aws_ecs_task_definition" "backend" {
 
 # ECS Service
 resource "aws_ecs_service" "backend" {
-  name                               = "${local.name_prefix}-backend"
-  cluster                           = var.ecs_cluster_id
-  task_definition                   = aws_ecs_task_definition.backend.arn
-  desired_count                     = var.desired_count
-  launch_type                       = "FARGATE"
-  platform_version                  = "LATEST"
+  name             = "${local.name_prefix}-backend"
+  cluster          = var.ecs_cluster_id
+  task_definition  = aws_ecs_task_definition.backend.arn
+  desired_count    = var.desired_count
+  launch_type      = "FARGATE"
+  platform_version = "LATEST"
 
   network_configuration {
     subnets         = var.private_subnet_ids

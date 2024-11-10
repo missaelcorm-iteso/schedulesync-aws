@@ -1,6 +1,6 @@
 locals {
   name_prefix = "${var.project}-${var.environment}"
-  
+
   common_tags = {
     Environment = var.environment
     Project     = var.project
@@ -48,7 +48,7 @@ resource "aws_security_group_rule" "alb_cloudflare_https" {
   to_port           = 443
   protocol          = "tcp"
   security_group_id = aws_security_group.alb.id
-  
+
   # Cloudflare IP ranges
   cidr_blocks = [
     "173.245.48.0/20",
@@ -237,7 +237,7 @@ resource "aws_iam_role_policy" "backend_task" {
   role = aws_iam_role.backend_task.id
 
   policy = jsonencode({
-    Version = "2012-10-17"   # tfsec:ignore:aws-iam-no-policy-wildcards
+    Version = "2012-10-17" # tfsec:ignore:aws-iam-no-policy-wildcards
     Statement = [
       {
         Effect = "Allow"
@@ -301,9 +301,9 @@ resource "aws_security_group" "documentdb" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port   = 27017
-    to_port     = 27017
-    protocol    = "tcp"
+    from_port       = 27017
+    to_port         = 27017
+    protocol        = "tcp"
     security_groups = [aws_security_group.backend.id]
   }
 

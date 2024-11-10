@@ -7,12 +7,12 @@ locals {
 module "networking" {
   source = "../../modules/networking"
 
-  project           = var.project
-  environment       = var.environment
-  vpc_cidr         = var.vpc_cidr
-  azs              = var.availability_zones
-  private_subnets  = [for k, v in var.availability_zones : cidrsubnet(var.vpc_cidr, 4, k)]
-  public_subnets   = [for k, v in var.availability_zones : cidrsubnet(var.vpc_cidr, 4, k + 4)]
+  project         = var.project
+  environment     = var.environment
+  vpc_cidr        = var.vpc_cidr
+  azs             = var.availability_zones
+  private_subnets = [for k, v in var.availability_zones : cidrsubnet(var.vpc_cidr, 4, k)]
+  public_subnets  = [for k, v in var.availability_zones : cidrsubnet(var.vpc_cidr, 4, k + 4)]
   docdb_subnets   = [for k, v in var.availability_zones : cidrsubnet(var.vpc_cidr, 4, k + 8)]
 }
 
@@ -20,10 +20,10 @@ module "networking" {
 module "security" {
   source = "../../modules/security"
 
-  project     = var.project
-  environment = var.environment
-  vpc_id      = module.networking.vpc_id
-  s3_user_uploads_bucket_arn = module.s3_user_uploads.bucket_arn
+  project                                         = var.project
+  environment                                     = var.environment
+  vpc_id                                          = module.networking.vpc_id
+  s3_user_uploads_bucket_arn                      = module.s3_user_uploads.bucket_arn
   aws_secretsmanager_secret_docdb_credentials_arn = module.secrets.docdb_secrets_manager_secret_arn
 }
 
@@ -31,9 +31,9 @@ module "security" {
 module "ecs_cluster" {
   source = "../../modules/ecs-cluster"
 
-  project                = var.project
-  environment           = var.environment
-  vpc_id                = module.networking.vpc_id
+  project                   = var.project
+  environment               = var.environment
+  vpc_id                    = module.networking.vpc_id
   enable_container_insights = true
 }
 
@@ -41,13 +41,13 @@ module "ecs_cluster" {
 module "alb" {
   source = "../../modules/alb"
 
-  project              = var.project
-  environment          = var.environment
-  vpc_id               = module.networking.vpc_id
-  public_subnet_ids    = module.networking.public_subnet_ids
-  security_group_id    = module.security.alb_security_group_id
-  certificate_arn      = module.acm.certificate_validation_arn
-  app_domain           = local.app_domain
+  project                   = var.project
+  environment               = var.environment
+  vpc_id                    = module.networking.vpc_id
+  public_subnet_ids         = module.networking.public_subnet_ids
+  security_group_id         = module.security.alb_security_group_id
+  certificate_arn           = module.acm.certificate_validation_arn
+  app_domain                = local.app_domain
   backend_health_check_path = "/"
 
   depends_on = [module.acm]
@@ -60,22 +60,22 @@ module "backend_service" {
   project     = var.project
   environment = var.environment
 
-  ecs_cluster_id = module.ecs_cluster.cluster_id
+  ecs_cluster_id     = module.ecs_cluster.cluster_id
   private_subnet_ids = module.networking.private_subnet_ids
-  security_group_id = module.security.backend_security_group_id
+  security_group_id  = module.security.backend_security_group_id
   execution_role_arn = module.security.ecs_task_execution_backend_role_arn
-  task_role_arn = module.security.backend_task_role_arn
-  health_check_path = "/"
+  task_role_arn      = module.security.backend_task_role_arn
+  health_check_path  = "/"
 
   alb_target_group_arn = module.alb.backend_target_group_arn
   alb_listener_arn     = module.alb.https_listener_arn
-  ecr_repository_url = var.backend_image.repository_url
-  container_image_tag = var.backend_image.tag
+  ecr_repository_url   = var.backend_image.repository_url
+  container_image_tag  = var.backend_image.tag
 
-  container_port = 3000
-  container_cpu = 512
+  container_port   = 3000
+  container_cpu    = 512
   container_memory = 1024
-  desired_count = 2
+  desired_count    = 2
 
   environment_variables = [
     {
@@ -95,12 +95,12 @@ module "backend_service" {
       value = "tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
     },
     {
-      name: "S3_BUCKET_NAME"
-      value: module.s3_user_uploads.bucket_name
+      name : "S3_BUCKET_NAME"
+      value : module.s3_user_uploads.bucket_name
     },
     {
-      name: "AWS_REGION"
-      value: var.aws_region
+      name : "AWS_REGION"
+      value : var.aws_region
     }
   ]
 
@@ -141,22 +141,22 @@ module "frontend_service" {
   project     = var.project
   environment = var.environment
 
-  ecs_cluster_id = module.ecs_cluster.cluster_id
-  private_subnet_ids = module.networking.private_subnet_ids
-  security_group_id = module.security.frontend_security_group_id
+  ecs_cluster_id       = module.ecs_cluster.cluster_id
+  private_subnet_ids   = module.networking.private_subnet_ids
+  security_group_id    = module.security.frontend_security_group_id
   alb_target_group_arn = module.alb.frontend_target_group_arn
   alb_listener_arn     = module.alb.https_listener_arn
-  execution_role_arn = module.security.ecs_task_execution_frontend_role_arn
-  task_role_arn = module.security.frontend_task_role_arn
+  execution_role_arn   = module.security.ecs_task_execution_frontend_role_arn
+  task_role_arn        = module.security.frontend_task_role_arn
 
-  ecr_repository_url = var.frontend_image.repository_url
+  ecr_repository_url  = var.frontend_image.repository_url
   container_image_tag = var.frontend_image.tag
   backend_service_url = "api.${local.app_domain}"
 
-  container_port = 8080
-  container_cpu = 256
+  container_port   = 8080
+  container_cpu    = 256
   container_memory = 512
-  desired_count = 2
+  desired_count    = 2
 
   depends_on = [module.alb, module.acm]
 
@@ -186,18 +186,18 @@ module "dns" {
 module "acm" {
   source = "../../modules/acm"
 
-  project     = var.project
-  environment = var.environment
-  root_domain  = var.root_domain
-  cloudflare_zone_id      = var.cloudflare_zone_id
+  project            = var.project
+  environment        = var.environment
+  root_domain        = var.root_domain
+  cloudflare_zone_id = var.cloudflare_zone_id
 }
 
 module "s3_user_uploads" {
   source = "../../modules/s3_user_uploads"
 
-  bucket_name = "${var.project}-${var.environment}-user-uploads"
-  environment = var.environment
-  project     = var.project
+  bucket_name           = "${var.project}-${var.environment}-user-uploads"
+  environment           = var.environment
+  project               = var.project
   backend_task_role_arn = module.security.backend_task_role_arn
   allowed_origins = [
     "http://localhost:${module.backend_service.container_port}",
@@ -208,10 +208,10 @@ module "s3_user_uploads" {
 module "secrets" {
   source = "../../modules/secrets"
 
-  project     = var.project
-  environment = var.environment
-  docdb_host  = module.documentdb.cluster_endpoint
-  docdb_port  = module.documentdb.cluster_port
+  project                       = var.project
+  environment                   = var.environment
+  docdb_host                    = module.documentdb.cluster_endpoint
+  docdb_port                    = module.documentdb.cluster_port
   docdb_recovery_window_in_days = 0
 }
 
@@ -229,9 +229,9 @@ module "documentdb" {
   instance_count = 1
 
   backup_retention_period = 7
-  deletion_protection    = false
-  apply_immediately = true
-  tls_enabled = true
+  deletion_protection     = false
+  apply_immediately       = true
+  tls_enabled             = true
 }
 
 # Data sources

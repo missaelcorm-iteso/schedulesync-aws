@@ -28,11 +28,11 @@ resource "aws_acm_certificate" "main" {
   subject_alternative_names = [
     "api-${local.domain_name}"
   ]
-  validation_method         = "DNS"
+  validation_method = "DNS"
 
   tags = merge(local.common_tags, {
-    Name = "${local.name_prefix}-cert"
-    Timestamp = timestamp()  # This forces recreation
+    Name      = "${local.name_prefix}-cert"
+    Timestamp = timestamp() # This forces recreation
   })
 
   lifecycle {
@@ -50,12 +50,12 @@ resource "cloudflare_record" "acm_validation" {
     }
   }
 
-  zone_id = var.cloudflare_zone_id
-  name    = trimsuffix(each.value.name, ".${var.root_domain}.")
-  content = each.value.record
-  type    = each.value.type
-  ttl     = 60
-  proxied = false # Important: DNS validation records should not be proxied
+  zone_id         = var.cloudflare_zone_id
+  name            = trimsuffix(each.value.name, ".${var.root_domain}.")
+  content         = each.value.record
+  type            = each.value.type
+  ttl             = 60
+  proxied         = false # Important: DNS validation records should not be proxied
   allow_overwrite = true
 
   lifecycle {

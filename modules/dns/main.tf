@@ -14,24 +14,24 @@ locals {
 
 # Main domain record
 resource "cloudflare_record" "main" {
-  zone_id = var.cloudflare_zone_id
-  name    = local.app_domain # This will create schedulesync-dev.domain.com
-  content   = var.alb_dns_name
-  type    = "CNAME"
-  proxied = var.enable_proxy
+  zone_id         = var.cloudflare_zone_id
+  name            = local.app_domain # This will create schedulesync-dev.domain.com
+  content         = var.alb_dns_name
+  type            = "CNAME"
+  proxied         = var.enable_proxy
   allow_overwrite = true
-  ttl     = 1 # Auto when proxied
+  ttl             = 1 # Auto when proxied
 }
 
 # API subdomain record (optional if using path-based routing)
 resource "cloudflare_record" "api" {
-  zone_id = var.cloudflare_zone_id
-  name    = "api-${local.app_domain}" # This will create *.schedulesync-dev.yourdomain.com
-  content   = var.alb_dns_name
-  type    = "CNAME"
-  proxied = var.enable_proxy
+  zone_id         = var.cloudflare_zone_id
+  name            = "api-${local.app_domain}" # This will create *.schedulesync-dev.yourdomain.com
+  content         = var.alb_dns_name
+  type            = "CNAME"
+  proxied         = var.enable_proxy
   allow_overwrite = true
-  ttl     = 1
+  ttl             = 1
 }
 
 # Cloudflare SSL/TLS Settings (optional)
@@ -39,7 +39,7 @@ resource "cloudflare_zone_settings_override" "main" {
   zone_id = var.cloudflare_zone_id
 
   settings {
-    ssl = "strict"
+    ssl              = "strict"
     always_use_https = "on"
   }
 }

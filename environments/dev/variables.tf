@@ -36,7 +36,7 @@ variable "availability_zones" {
 variable "frontend_image" {
   type = object({
     repository_url = string
-    tag           = string
+    tag            = string
   })
   description = "Frontend container image details"
 }
@@ -44,7 +44,7 @@ variable "frontend_image" {
 variable "backend_image" {
   type = object({
     repository_url = string
-    tag           = string
+    tag            = string
   })
   description = "Backend container image details"
 }

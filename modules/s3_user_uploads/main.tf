@@ -6,9 +6,9 @@ locals {
   }
 }
 
- # tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-encryption-customer-key
+# tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "user_uploads" {
-  bucket = var.bucket_name
+  bucket        = var.bucket_name
   force_destroy = true
 
   tags = merge(
@@ -27,7 +27,7 @@ resource "aws_s3_bucket_versioning" "user_uploads" {
 
 resource "aws_s3_bucket_ownership_controls" "user_uploads" {
   bucket = aws_s3_bucket.user_uploads.id
-  
+
   rule {
     object_ownership = "BucketOwnerEnforced"
   }
@@ -57,8 +57,8 @@ resource "aws_s3_bucket_policy" "user_uploads" {
         Resource  = ["${aws_s3_bucket.user_uploads.arn}/*"]
       },
       {
-        Sid       = "AllowECSUpload"
-        Effect    = "Allow"
+        Sid    = "AllowECSUpload"
+        Effect = "Allow"
         Principal = {
           AWS = var.backend_task_role_arn
         }
