@@ -151,7 +151,6 @@ module "frontend_service" {
 
   ecr_repository_url  = var.frontend_image.repository_url
   container_image_tag = var.frontend_image.tag
-  backend_service_url = "api.${local.app_domain}"
 
   container_port   = 8080
   container_cpu    = 256
