@@ -19,3 +19,8 @@ output "docdb_credentials_master_password" {
   value       = aws_secretsmanager_secret_version.master_password.secret_string
   sensitive   = true
 }
+
+output "backend_jwt_secret_arn" {
+  description = "ARN of the Secrets Manager secret containing the JWT secret for the backend"
+  value       = aws_secretsmanager_secret.app_jwt_secret.arn
+}

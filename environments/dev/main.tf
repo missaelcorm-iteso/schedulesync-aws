@@ -127,7 +127,7 @@ module "backend_service" {
     },
     {
       name      = "SECRET_KEY"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/secret_key"
+      valueFrom = "${module.secrets.backend_jwt_secret_arn}:secret::"
     }
   ]
 
