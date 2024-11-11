@@ -32,7 +32,6 @@ resource "aws_acm_certificate" "main" {
 
   tags = merge(local.common_tags, {
     Name      = "${local.name_prefix}-cert"
-    Timestamp = timestamp() # This forces recreation
   })
 
   lifecycle {
