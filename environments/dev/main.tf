@@ -232,6 +232,3 @@ module "documentdb" {
   apply_immediately       = true
   tls_enabled             = true
 }
-
-# Data sources
-data "aws_caller_identity" "current" {}
