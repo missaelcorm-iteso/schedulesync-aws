@@ -6,22 +6,6 @@ locals {
     Project     = var.project
     ManagedBy   = "Terraform"
   }
-
-  default_environment_variables = [
-    {
-      name  = "NODE_ENV"
-      value = var.environment
-    },
-    {
-      name  = "APP_API_URL"
-      value = "https://${var.backend_service_url}"
-    }
-  ]
-
-  combined_environment_variables = concat(
-    local.default_environment_variables,
-    var.environment_variables
-  )
 }
 
 # Task Definition
@@ -45,7 +29,7 @@ resource "aws_ecs_task_definition" "frontend" {
           protocol      = "tcp"
         }
       ]
-      environment = local.combined_environment_variables
+      environment = var.environment_variables
       secrets     = var.secrets
       logConfiguration = {
         logDriver = "awslogs"
