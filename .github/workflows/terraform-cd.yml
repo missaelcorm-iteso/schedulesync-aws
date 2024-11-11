@@ -20,7 +20,7 @@ on:
         required: true
 
 jobs:
-  terraform-ci:
+  terraform-cd:
     runs-on: ubuntu-latest
     container: "missaelcorm/terratool:v0.10"
     env:
