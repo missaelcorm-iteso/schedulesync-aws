@@ -50,7 +50,7 @@ resource "aws_security_group_rule" "alb_cloudflare_https" {
   security_group_id = aws_security_group.alb.id
 
   # Cloudflare IP ranges
-  cidr_blocks = [
+  cidr_blocks = sort([
     "173.245.48.0/20",
     "103.21.244.0/22",
     "103.22.200.0/22",
@@ -66,7 +66,7 @@ resource "aws_security_group_rule" "alb_cloudflare_https" {
     "104.24.0.0/14",
     "172.64.0.0/13",
     "131.0.72.0/22"
-  ]
+  ])
 }
 
 # Frontend Security Group
