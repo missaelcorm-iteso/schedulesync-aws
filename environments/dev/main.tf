@@ -127,7 +127,7 @@ module "backend_service" {
     },
     {
       name      = "SECRET_KEY"
-      valueFrom = "${module.secrets.backend_jwt_secret_arn}:secret::"
+      valueFrom = "${module.secrets.backend_jwt_secret_arn}:secretkey::"
     }
   ]
 

@@ -74,7 +74,7 @@ resource "aws_secretsmanager_secret" "app_jwt_secret" {
 resource "aws_secretsmanager_secret_version" "backend_jwt_secret" {
   secret_id = aws_secretsmanager_secret.app_jwt_secret.id
   secret_string = jsonencode({
-    secret = data.aws_secretsmanager_random_password.app_jwt_secret.random_password
+    secretkey = data.aws_secretsmanager_random_password.app_jwt_secret.random_password
   })
 
   lifecycle {
