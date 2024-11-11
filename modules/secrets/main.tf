@@ -57,3 +57,27 @@ resource "aws_secretsmanager_secret_version" "docdb_credentials" {
     dbname   = var.docdb_name
   })
 }
+
+data "aws_secretsmanager_random_password" "app_jwt_secret" {
+  password_length     = 64
+  exclude_numbers     = false
+  exclude_punctuation = true
+  include_space       = false
+}
+
+resource "aws_secretsmanager_secret" "app_jwt_secret" {
+  name                    = "${var.project}-${var.environment}-app-jwt-secret"
+  description             = "JWT secret for the application"
+  recovery_window_in_days = 0
+}
+
+resource "aws_secretsmanager_secret_version" "backend_jwt_secret" {
+  secret_id = aws_secretsmanager_secret.app_jwt_secret.id
+  secret_string = jsonencode({
+    secretkey = data.aws_secretsmanager_random_password.app_jwt_secret.random_password
+  })
+
+  lifecycle {
+    ignore_changes = [secret_string]
+  }
+}

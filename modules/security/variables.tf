@@ -22,3 +22,8 @@ variable "aws_secretsmanager_secret_docdb_credentials_arn" {
   type        = string
   description = "ARN of the DocumentDB credentials in Secrets Manager"
 }
+
+variable "aws_secretsmanager_secret_app_jwt_secret_arn" {
+  type        = string
+  description = "ARN of the JWT secret in Secrets Manager"
+}

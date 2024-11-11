@@ -276,11 +276,10 @@ resource "aws_iam_role_policy" "execution_backend_task" {
       {
         Effect = "Allow"
         Action = [
-          "ssm:GetParameters"
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
         ]
-        Resource = [
-          "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/*"
-        ]
+        Resource = [var.aws_secretsmanager_secret_app_jwt_secret_arn]
       }
     ]
   })

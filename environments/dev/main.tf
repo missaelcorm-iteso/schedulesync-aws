@@ -25,6 +25,7 @@ module "security" {
   vpc_id                                          = module.networking.vpc_id
   s3_user_uploads_bucket_arn                      = module.s3_user_uploads.bucket_arn
   aws_secretsmanager_secret_docdb_credentials_arn = module.secrets.docdb_secrets_manager_secret_arn
+  aws_secretsmanager_secret_app_jwt_secret_arn    = module.secrets.backend_jwt_secret_arn
 }
 
 # ECS Cluster
@@ -127,7 +128,7 @@ module "backend_service" {
     },
     {
       name      = "SECRET_KEY"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.project}/${var.environment}/secret_key"
+      valueFrom = "${module.secrets.backend_jwt_secret_arn}:secretkey::"
     }
   ]
 
@@ -232,6 +233,3 @@ module "documentdb" {
   apply_immediately       = true
   tls_enabled             = true
 }
-
-# Data sources
-data "aws_caller_identity" "current" {}
