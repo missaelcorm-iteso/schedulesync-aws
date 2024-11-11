@@ -33,10 +33,6 @@ resource "aws_acm_certificate" "main" {
   tags = merge(local.common_tags, {
     Name      = "${local.name_prefix}-cert"
   })
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 # Create DNS validation records in Cloudflare
