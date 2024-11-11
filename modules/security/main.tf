@@ -14,32 +14,41 @@ resource "aws_security_group" "alb" {
   description = "Security group for Application Load Balancer"
   vpc_id      = var.vpc_id
 
-  ingress {
-    description = "HTTP from internet"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "HTTPS from internet"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   tags = merge(local.common_tags, {
     Name = "${local.name_prefix}-alb-sg"
   })
+}
+
+# HTTP ingress rule
+resource "aws_security_group_rule" "alb_http" {
+  type              = "ingress"
+  description       = "HTTP from internet"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.alb.id
+}
+
+# HTTPS ingress rule
+resource "aws_security_group_rule" "alb_https" {
+  type              = "ingress"
+  description       = "HTTPS from internet"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.alb.id
+}
+
+# Egress rule
+resource "aws_security_group_rule" "alb_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.alb.id
 }
 
 resource "aws_security_group_rule" "alb_cloudflare_https" {
@@ -50,7 +59,7 @@ resource "aws_security_group_rule" "alb_cloudflare_https" {
   security_group_id = aws_security_group.alb.id
 
   # Cloudflare IP ranges
-  cidr_blocks = [
+  cidr_blocks = sort([
     "173.245.48.0/20",
     "103.21.244.0/22",
     "103.22.200.0/22",
@@ -66,7 +75,7 @@ resource "aws_security_group_rule" "alb_cloudflare_https" {
     "104.24.0.0/14",
     "172.64.0.0/13",
     "131.0.72.0/22"
-  ]
+  ])
 }
 
 # Frontend Security Group

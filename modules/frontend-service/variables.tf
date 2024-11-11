@@ -79,11 +79,6 @@ variable "health_check_path" {
   default     = "/"
 }
 
-variable "backend_service_url" {
-  type        = string
-  description = "Backend service URL for API calls"
-}
-
 variable "environment_variables" {
   type = list(object({
     name  = string
