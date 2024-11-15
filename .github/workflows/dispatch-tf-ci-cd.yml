@@ -17,7 +17,7 @@ on:
 
 jobs: 
   terraform-ci:
-    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-ci.yml@main
+    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-ci.yml@add-tfstate-artifact-deletion
     with:
       working-directory: "environments/${{ github.event.inputs.environment }}"
     secrets:
@@ -28,9 +28,10 @@ jobs:
   terraform-cd:
     needs: terraform-ci
     if: ${{ github.event.inputs.trigger_cd == 'true' }}
-    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-cd.yml@main
+    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-cd.yml@add-tfstate-artifact-deletion
     with:
       working-directory: "environments/${{ github.event.inputs.environment }}"
+      tfplan-artifact-id: ${{ needs.terraform-ci.outputs.tfplan-artifact-id }}
     secrets:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
