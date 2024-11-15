@@ -31,8 +31,17 @@ jobs:
     uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-cd.yml@add-tfstate-artifact-deletion
     with:
       working-directory: "environments/${{ github.event.inputs.environment }}"
-      tfplan-artifact-id: ${{ needs.terraform-ci.outputs.tfplan-artifact-id }}
     secrets:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+  delete-artifact:
+    needs: [terraform-ci, terraform-cd]
+    if: ${{ always() }}
+    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/delete-artifact.yml@add-tfstate-artifact-deletion
+    with:
+      tfplan-artifact-id: ${{ needs.terraform-ci.outputs.tfplan-artifact-id }}
+      github-repository: ${{ github.repository }}
+    secrets:
+      GITHUB_TOKEN_INPUT: ${{ secrets.GITHUB_TOKEN }}
