@@ -17,6 +17,10 @@ on:
       cloudflare_api_token:
         description: 'Cloudflare API Token'
         required: true
+    outputs:  
+      tfplan-artifact-id:
+        description: 'Terraform Plan Artifact ID'
+        value: ${{ jobs.terraform-ci.outputs.tfplan-artifact-id }}
     
 jobs:
   terraform-ci:
