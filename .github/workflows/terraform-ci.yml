@@ -22,6 +22,8 @@ jobs:
   terraform-ci:
     runs-on: ubuntu-latest
     container: "missaelcorm/terratool:v0.10"
+    outputs:
+      tfplan-artifact-id: ${{ steps.upload.outputs.artifact-id }}
     env:
       TF_LOG: INFO
       AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
