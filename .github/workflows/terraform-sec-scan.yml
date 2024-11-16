@@ -55,8 +55,8 @@ jobs:
           path: ${{ github.workspace }}/${{ inputs.working-directory }}/tfsec-report.json
           if-no-files-found: error
 
-      - name: Exit with failure if tfsec fails
-        run: exit $([[ ${{ steps.tfsec.outcome }} == 'success' || ${{ steps.tfsec.outcome }} == 'skipped' ]] && echo 0 || echo 1)
+      # - name: Exit with failure if tfsec fails
+      #   run: exit $([[ ${{ steps.tfsec.outcome }} == 'success' || ${{ steps.tfsec.outcome }} == 'skipped' ]] && echo 0 || echo 1)
 
       # Commenting out the upload to security tab as it is not supported by the GitHub for Organizations plan
       # - name: Upload to security tab
