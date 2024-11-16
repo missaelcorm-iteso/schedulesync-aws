@@ -9,7 +9,7 @@ on:
         type: string
     
 jobs:
-  terraform-ci:
+  terraform-sec-scan:
     runs-on: ubuntu-latest
     container: "missaelcorm/terratool:v0.10"
     steps:
@@ -31,14 +31,14 @@ jobs:
       - name: Upload Sarif Terraform Security Report Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: security/tfsec/${{ env.ENVIRONMENT }}-sarif-${{ github.sha }}
+          name: security_tfsec_${{ env.ENVIRONMENT }}_sarif_${{ github.sha }}
           path: ${{ github.workspace }}/${{ inputs.working-directory }}/tfsec-report.sarif.json
           if-no-files-found: error
 
       - name: Upload Sarif Terraform Security Report Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: security/tfsec/${{ env.ENVIRONMENT }}-json-${{ github.sha }}
+          name: security_tfsec_${{ env.ENVIRONMENT }}_json_${{ github.sha }}
           path: ${{ github.workspace }}/${{ inputs.working-directory }}/tfsec-report.json
           if-no-files-found: error
 
