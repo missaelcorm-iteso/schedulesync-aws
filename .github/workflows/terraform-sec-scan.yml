@@ -55,6 +55,9 @@ jobs:
           path: ${{ github.workspace }}/${{ inputs.working-directory }}/tfsec-report.json
           if-no-files-found: error
 
+      - name: Exit with failure if tfsec fails
+        run: exit ${{ steps.tfsec.outcome }}
+
       # Commenting out the upload to security tab as it is not supported by the GitHub for Organizations plan
       # - name: Upload to security tab
       #   uses: github/codeql-action/upload-sarif@v3
