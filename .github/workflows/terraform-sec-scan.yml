@@ -7,11 +7,21 @@ on:
         description: 'Working Directory'
         required: true
         type: string
+    outputs:
+      tfsec-sarif-artifact-id:
+        description: 'Terraform Security Scan Sarif Artifact ID'
+        value: ${{ jobs.terraform-sec-scan.outputs.tfsec-sarif-artifact-id }}
+      tfsec-json-artifact-id:
+        description: 'Terraform Security Scan JSON Artifact ID'
+        value: ${{ jobs.terraform-sec-scan.outputs.tfsec-json-artifact-id }}
     
 jobs:
   terraform-sec-scan:
     runs-on: ubuntu-latest
     container: "missaelcorm/terratool:v0.10"
+    outputs:
+      tfsec-sarif-artifact-id: ${{ steps.tfsec-upload-sarif.outputs.artifact-id }}
+      tfsec-json-artifact-id: ${{ steps.tfsec-upload-json.outputs.artifact-id }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,6 +39,7 @@ jobs:
         continue-on-error: true
         
       - name: Upload Sarif Terraform Security Report Artifact
+        id: tfsec-upload-sarif
         uses: actions/upload-artifact@v4
         with:
           name: security_tfsec_${{ env.ENVIRONMENT }}_sarif_${{ github.sha }}
@@ -36,6 +47,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload Sarif Terraform Security Report Artifact
+        id: tfsec-upload-json
         uses: actions/upload-artifact@v4
         with:
           name: security_tfsec_${{ env.ENVIRONMENT }}_json_${{ github.sha }}
