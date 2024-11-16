@@ -30,6 +30,7 @@ jobs:
     uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-sec-scan.yml@main
     with:
       working-directory: "environments/${{ github.event.inputs.environment }}"
+      environment: "${{ github.event.inputs.environment }}"
 
   terraform-cd:
     needs: terraform-ci
