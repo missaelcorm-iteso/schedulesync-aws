@@ -7,6 +7,10 @@ on:
         description: 'Working Directory'
         required: true
         type: string
+      environment:
+        description: 'Environment'
+        required: true
+        type: string
     outputs:
       tfsec-sarif-artifact-id:
         description: 'Terraform Security Scan Sarif Artifact ID'
@@ -22,14 +26,11 @@ jobs:
     outputs:
       tfsec-sarif-artifact-id: ${{ steps.tfsec-upload-sarif.outputs.artifact-id }}
       tfsec-json-artifact-id: ${{ steps.tfsec-upload-json.outputs.artifact-id }}
+    env:
+      ENVIRONMENT: ${{ inputs.environment }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set Environment
-        run: |
-          echo "ENVIRONMENT=$(echo '${{ inputs.working-directory }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
-          echo "Environment: ${{ env.ENVIRONMENT }}"
       
       - name: Terraform Security Check
         id: tfsec
