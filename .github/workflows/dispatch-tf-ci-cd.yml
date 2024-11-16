@@ -15,8 +15,23 @@ on:
         options:
           - dev
 
+concurrency:
+  group: terraform-${{ github.workflow }}-${{ github.event.inputs.environment }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs: 
+  validate-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Environment
+        run: |
+          if [[ ! -d "environments/${{ github.event.inputs.environment }}" ]]; then
+            echo "Environment directory does not exist"
+            exit 1
+          fi
+  
   terraform-ci:
+    needs: validate-inputs
     uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-ci.yml@main
     with:
       working-directory: "environments/${{ github.event.inputs.environment }}"
