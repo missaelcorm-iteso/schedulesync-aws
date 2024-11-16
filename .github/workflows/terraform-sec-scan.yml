@@ -1,0 +1,50 @@
+name: Infrastructure as Code Security Scan
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: 'Working Directory'
+        required: true
+        type: string
+    
+jobs:
+  terraform-ci:
+    runs-on: ubuntu-latest
+    container: "missaelcorm/terratool:v0.10"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set Environment
+        run: |
+          echo "ENVIRONMENT=$(echo '${{ inputs.working-directory }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+          echo "Environment: ${{ env.ENVIRONMENT }}"
+      
+      - name: Terraform Security Check
+        id: tfsec
+        working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
+        run: |
+          tfsec . --minimum-severity MEDIUM -f lovely,json,sarif --out tfsec-report
+        continue-on-error: true
+        
+      - name: Upload Sarif Terraform Security Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: security/tfsec/${{ env.ENVIRONMENT }}-sarif-${{ github.sha }}
+          path: ${{ github.workspace }}/${{ inputs.working-directory }}/tfsec-report.sarif.json
+          if-no-files-found: error
+
+      - name: Upload Sarif Terraform Security Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: security/tfsec/${{ env.ENVIRONMENT }}-json-${{ github.sha }}
+          path: ${{ github.workspace }}/${{ inputs.working-directory }}/tfsec-report.json
+          if-no-files-found: error
+
+      - name: Upload to security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ github.workspace }}/${{ inputs.working-directory }}/tfsec-report.sarif.json
+          category: Terraform Security
+        

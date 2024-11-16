@@ -17,13 +17,19 @@ on:
 
 jobs: 
   terraform-ci:
-    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-ci.yml@main
+    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-ci.yml@add-sec-artifacts
     with:
       working-directory: "environments/${{ github.event.inputs.environment }}"
     secrets:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+  terraform-sec-scan:
+    needs: terraform-ci
+    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-sec-scan.yml@add-sec-artifacts
+    with:
+      working-directory: "environments/${{ github.event.inputs.environment }}"
 
   terraform-cd:
     needs: terraform-ci
