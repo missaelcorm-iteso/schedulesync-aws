@@ -17,7 +17,7 @@ on:
 
 jobs: 
   terraform-ci:
-    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-ci.yml@add-sec-artifacts
+    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-ci.yml@main
     with:
       working-directory: "environments/${{ github.event.inputs.environment }}"
     secrets:
@@ -27,7 +27,7 @@ jobs:
 
   terraform-sec-scan:
     needs: terraform-ci
-    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-sec-scan.yml@add-sec-artifacts
+    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-sec-scan.yml@main
     with:
       working-directory: "environments/${{ github.event.inputs.environment }}"
 
