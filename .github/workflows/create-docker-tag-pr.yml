@@ -1,0 +1,87 @@
+name: Create Docker Tag Pull Request
+
+on:
+  workflow_call:
+    inputs:
+      service: 
+        description: 'Backend or Frontend service'
+        required: true
+        type: string
+      docker-tag:
+        description: 'Docker Tag'
+        required: true
+        type: string
+      github-repository:
+        description: 'GitHub Repository'
+        required: true
+        type: string
+      github-actor:
+        description: 'GitHub Actor'
+        required: true
+        type: string
+      environment:
+        description: 'Environment'
+        required: true
+        type: string
+    secrets:
+      GITHUB_TOKEN_INPUT:
+        description: 'GitHub Token'
+        required: true
+
+jobs:
+  validate-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate Environment
+        run: |
+          if [[ ! -d "environments/${{ github.event.inputs.environment }}" ]]; then
+            echo "Environment directory does not exist"
+            exit 1
+          fi
+  
+      - name: Validate Service
+        run: |
+          valid_services=("backend" "frontend")
+          if [[ ! " ${valid_services[@]} " =~ " ${{ github.event.inputs.service }} " ]]; then
+            echo "Service must be one of ${valid_services[@]}"
+            exit 1
+          fi
+
+  deploy-docker-tag-pr:
+    needs: validate-inputs
+    runs-on: ubuntu-latest
+    env:
+      TERRFORM_TFVARS: ${{ github.workspace }}/environments/${{ github.event.inputs.environment }}/terraform.tfvars
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Modify Docker Tag
+        run: |
+          python ${{ env.TERRFORM_TFVARS }} ${{ github.event.inputs.service }} ${{ github.event.inputs.docker-tag }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN_INPUT }}
+          commit-message: "Update Docker Tag ${{ github.event.inputs.docker-tag }}"
+          title: "Update Docker Tag ${{ github.event.inputs.docker-tag }}"
+          body: |
+            This PR updates a new Docker Tag ${{ github.event.inputs.docker-tag }} for deploying.
+          branch: "docker-tag-${{ github.event.inputs.docker-tag }}"
+          base: "main"
+          labels: "docker-tag"
+          assignees: ${{ github.event.inputs.github-actor }}
+          reviewers: ${{ github.repository_owner }}
+          draft: false
+          signoff: true
+          add-paths: |
+            environments/*/terraform.tfvars
