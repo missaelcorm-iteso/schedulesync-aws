@@ -9,7 +9,7 @@ availability_zones = ["us-west-2a", "us-west-2b"]
 
 frontend_image = {
   repository_url = "missaelcorm/schedulesync-web"
-  tag            = "v0.11"
+  tag            = "aae21e2"
 }
 
 backend_image = {
