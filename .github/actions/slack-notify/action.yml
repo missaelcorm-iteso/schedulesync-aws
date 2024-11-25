@@ -1,0 +1,55 @@
+name: Slack Notify
+description: 'Send notification to Slack channel'
+
+inputs:
+  job_name:
+    description: 'Name of the job'
+    required: true
+    default: 'CI/CD Pipeline Notification'
+  job_status:
+    description: 'Status of the job'
+    required: true
+    default: 'success'
+  github_workflow:
+    description: 'Name of the workflow'
+    required: true
+    default: 'CI/CD Pipeline'
+  repo_name:
+    description: 'Name of the repository'
+    required: true
+    default: 'schedulesync'
+  branch_name:
+    description: 'Name of the branch'
+    required: true
+    default: 'main'
+  commit_sha:
+    description: 'SHA of the commit'
+    required: true
+    default: ''
+  slack_channel:
+    description: 'Slack channel to send notification'
+    required: true
+    default: '#notifications'
+  slack_webhook_url:
+    description: 'Slack webhook URL'
+    required: true
+
+runs:
+  using: composite
+  steps:    
+  - name: Send notification to Slack
+    uses: rtCamp/action-slack-notify@v2
+    env:
+      SLACK_WEBHOOK: ${{ inputs.slack_webhook_url }}
+      SLACK_CHANNEL: ${{ inputs.slack_channel }}
+      SLACK_USERNAME: 'CI/CD Bot'
+      SLACK_ICON_EMOJI: ':rocket:'
+      SLACK_COLOR: ${{ inputs.job_status }}
+      SLACK_TITLE: ${{ inputs.job_name }}
+      SLACK_MESSAGE: |
+        *Pipeline Status*: ${{ inputs.job_status }}
+        *Workflow*: ${{ inputs.github_workflow }}
+        *Job Name*: ${{ inputs.job_name }}
+        *Repository*: ${{ inputs.repo_name }}
+        *Branch*: ${{ inputs.branch_name }}
+        *Commit SHA*: ${{ inputs.commit_sha }}

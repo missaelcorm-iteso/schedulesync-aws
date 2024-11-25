@@ -34,7 +34,6 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_access_key }}
       TF_VAR_cloudflare_api_token: ${{ secrets.cloudflare_api_token }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -78,10 +77,8 @@ jobs:
           path: ${{ github.workspace }}/${{ inputs.working-directory }}/tfplan
 
       - name: Send notification to Slack
-        uses: missaelcorm-iteso/ScheduleSync/.github/actions/slack-notify@main
+        uses: ./.github/actions/slack-notify
         if: always()
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
           job_name: 'Terraform CI'
           job_status: ${{ job.status }}
