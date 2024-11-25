@@ -74,3 +74,16 @@ jobs:
         with:
           name: tfplan
           path: ${{ github.workspace }}/${{ inputs.working-directory }}/tfplan
+
+      - name: Send notification to Slack
+        uses: missaelcorm-iteso/ScheduleSync/.github/actions/slack-notify@main
+        if: always()
+        with:
+          job_name: 'Terraform CI'
+          job_status: ${{ job.status }}
+          github_workflow: ${{ github.workflow }}
+          repo_name: ${{ github.repository }}
+          branch_name: ${{ github.ref }}
+          commit_sha: ${{ github.sha }}
+          slack_channel: '#notifications'
+          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
