@@ -32,7 +32,7 @@ jobs:
   validate-inputs:
     runs-on: ubuntu-latest
     env:
-      SERVICE: ${{ github.event.inputs.service }}
+      SERVICE: ${{ inputs.service }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -43,7 +43,7 @@ jobs:
 
       - name: Validate Environment
         run: |
-          if [[ ! -d "environments/${{ github.event.inputs.environment }}" ]]; then
+          if [[ ! -d "environments/${{ inputs.environment }}" ]]; then
             echo "Environment directory does not exist"
             exit 1
           fi
@@ -60,7 +60,7 @@ jobs:
     needs: validate-inputs
     runs-on: ubuntu-latest
     env:
-      TERRFORM_TFVARS: ${{ github.workspace }}/environments/${{ github.event.inputs.environment }}/terraform.tfvars
+      TERRFORM_TFVARS: ${{ github.workspace }}/environments/${{ inputs.environment }}/terraform.tfvars
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -76,20 +76,20 @@ jobs:
 
       - name: Modify Docker Tag
         run: |
-          python ${{ env.TERRFORM_TFVARS }} ${{ github.event.inputs.service }} ${{ github.event.inputs.docker-tag }}
+          python ${{ env.TERRFORM_TFVARS }} ${{ inputs.service }} ${{ inputs.docker-tag }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN_INPUT }}
-          commit-message: "Update Docker Tag ${{ github.event.inputs.docker-tag }}"
-          title: "Update Docker Tag ${{ github.event.inputs.docker-tag }}"
+          commit-message: "Update Docker Tag ${{ inputs.docker-tag }}"
+          title: "Update Docker Tag ${{ inputs.docker-tag }}"
           body: |
-            This PR updates a new Docker Tag ${{ github.event.inputs.docker-tag }} for deploying.
-          branch: "docker-tag-${{ github.event.inputs.docker-tag }}"
+            This PR updates a new Docker Tag ${{ inputs.docker-tag }} for deploying.
+          branch: "docker-tag-${{ inputs.docker-tag }}"
           base: "main"
           labels: "docker-tag"
-          assignees: ${{ github.event.inputs.github-actor }}
+          assignees: ${{ inputs.github-actor }}
           reviewers: ${{ github.repository_owner }}
           draft: false
           signoff: true
