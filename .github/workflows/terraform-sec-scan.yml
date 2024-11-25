@@ -11,6 +11,10 @@ on:
         description: 'Environment'
         required: true
         type: string
+    secrets:
+      SLACK_WEBHOOK_URL:
+        description: 'Slack Webhook Url'
+        required: true
     outputs:
       tfsec-sarif-artifact-id:
         description: 'Terraform Security Scan Sarif Artifact ID'

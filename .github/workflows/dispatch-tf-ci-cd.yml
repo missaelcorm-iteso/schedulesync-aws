@@ -42,6 +42,7 @@ jobs:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   terraform-sec-scan:
     needs: terraform-ci
@@ -49,6 +50,8 @@ jobs:
     with:
       working-directory: "environments/${{ github.event.inputs.environment }}"
       environment: "${{ github.event.inputs.environment }}"
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   terraform-cd:
     needs: terraform-ci
@@ -60,6 +63,7 @@ jobs:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   delete-tfplan-artifact:
     needs: [terraform-ci, terraform-cd]

@@ -17,6 +17,9 @@ on:
       cloudflare_api_token:
         description: 'Cloudflare API Token'
         required: true
+      SLACK_WEBHOOK_URL:
+        description: 'Slack Webhook Url'
+        required: true
     outputs:  
       tfplan-artifact-id:
         description: 'Terraform Plan Artifact ID'
