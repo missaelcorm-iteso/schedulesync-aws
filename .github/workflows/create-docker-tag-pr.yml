@@ -7,6 +7,10 @@ on:
         description: 'Backend or Frontend service'
         required: true
         type: string
+      docker-image:
+        description: 'Docker Image'
+        required: true
+        type: string
       docker-tag:
         description: 'Docker Tag'
         required: true
@@ -21,6 +25,10 @@ on:
         type: string
       environment:
         description: 'Environment'
+        required: true
+        type: string
+      github-sha:
+        description: 'GitHub SHA'
         required: true
         type: string
     secrets:
@@ -93,7 +101,13 @@ jobs:
           commit-message: "Update Docker Tag ${{ inputs.docker-tag }}"
           title: "Update Docker Tag ${{ inputs.docker-tag }}"
           body: |
-            This PR updates a new Docker Tag ${{ inputs.docker-tag }} for deploying.
+            # Update Docker Tag
+            ## Description
+            Update Docker Tag ${{ inputs.docker-tag }} for ${{ inputs.service }} service:
+            - Docker Image: ${{ inputs.docker-image }}
+            - Docker Tag: ${{ inputs.docker-tag }}
+            - Environment: ${{ inputs.environment }}
+            - SHA: ${{ inputs.github-sha }}
           branch: "docker-tag-${{ inputs.docker-tag }}"
           base: "main"
           labels: "docker-tag"
