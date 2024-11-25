@@ -80,7 +80,7 @@ jobs:
 
       - name: Modify Docker Tag
         run: |
-          python ${{ env.TERRFORM_TFVARS }} ${{ inputs.service }} ${{ inputs.docker-tag }}
+          python scripts/update-docker-tag.py ${{ env.TERRFORM_TFVARS }} ${{ inputs.service }} ${{ inputs.docker-tag }}
 
       - name: File content
         run: |
