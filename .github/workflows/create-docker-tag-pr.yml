@@ -46,7 +46,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: missaelcorm-iteso/schedulesync-aws
-          ref: add-docker-tag-pr-wf
           token: ${{ secrets.GITHUB_TOKEN_INPUT }}
 
       - name: Validate Environment
@@ -74,7 +73,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: missaelcorm-iteso/schedulesync-aws
-          ref: add-docker-tag-pr-wf
           token: ${{ secrets.GITHUB_TOKEN_INPUT }}
 
       - name: Set up Python
