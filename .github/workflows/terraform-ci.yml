@@ -79,6 +79,8 @@ jobs:
       - name: Send notification to Slack
         uses: missaelcorm-iteso/ScheduleSync/.github/actions/slack-notify@main
         if: always()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
           job_name: 'Terraform CI'
           job_status: ${{ job.status }}
