@@ -1,0 +1,116 @@
+name: Create Docker Tag Pull Request
+
+on:
+  workflow_call:
+    inputs:
+      service: 
+        description: 'Backend or Frontend service'
+        required: true
+        type: string
+      docker-image:
+        description: 'Docker Image'
+        required: true
+        type: string
+      docker-tag:
+        description: 'Docker Tag'
+        required: true
+        type: string
+      github-repository:
+        description: 'GitHub Repository'
+        required: true
+        type: string
+      github-actor:
+        description: 'GitHub Actor'
+        required: true
+        type: string
+      environment:
+        description: 'Environment'
+        required: true
+        type: string
+      github-sha:
+        description: 'GitHub SHA'
+        required: true
+        type: string
+    secrets:
+      GITHUB_TOKEN_INPUT:
+        description: 'GitHub Token'
+        required: true
+
+jobs:
+  validate-inputs:
+    runs-on: ubuntu-latest
+    env:
+      SERVICE: ${{ inputs.service }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          repository: missaelcorm-iteso/schedulesync-aws
+          token: ${{ secrets.GITHUB_TOKEN_INPUT }}
+
+      - name: Validate Environment
+        run: |
+          if [[ ! -d "environments/${{ inputs.environment }}" ]]; then
+            echo "Environment directory does not exist"
+            exit 1
+          fi
+  
+      - name: Validate Service
+        run: |
+          valid_services=("backend" "frontend")
+          if [[ ! " ${valid_services[@]} " =~ " ${SERVICE} " ]]; then
+            echo "Service must be one of ${valid_services[@]}"
+            exit 1
+          fi
+
+  deploy-docker-tag-pr:
+    needs: validate-inputs
+    runs-on: ubuntu-latest
+    env:
+      TERRFORM_TFVARS: ./environments/${{ inputs.environment }}/terraform.tfvars
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          repository: missaelcorm-iteso/schedulesync-aws
+          token: ${{ secrets.GITHUB_TOKEN_INPUT }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: File content
+        run: |
+          cat ${{ env.TERRFORM_TFVARS }}
+
+      - name: Modify Docker Tag
+        run: |
+          python scripts/update-docker-tag.py ${{ env.TERRFORM_TFVARS }} ${{ inputs.service }} ${{ inputs.docker-tag }}
+
+      - name: File content
+        run: |
+          cat ${{ env.TERRFORM_TFVARS }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN_INPUT }}
+          commit-message: "Update Docker Tag ${{ inputs.docker-image }}:${{ inputs.docker-tag }}"
+          title: "Update Docker Tag ${{ inputs.docker-image }}:${{ inputs.docker-tag }}"
+          body: |
+            # Update Docker Tag
+            ## Description
+            Update Docker Tag `${{ inputs.docker-tag }}` for `${{ inputs.service }}` service:
+            - Docker Image: `${{ inputs.docker-image }}`
+            - Docker Tag: `${{ inputs.docker-tag }}`
+            - Environment: `${{ inputs.environment }}`
+            - SHA: `${{ inputs.github-sha }}`
+          branch: "${{ inputs.service }}/release/${{ inputs.docker-tag }}"
+          base: "main"
+          labels: "docker-tag,${{ inputs.service }}"
+          assignees: ${{ inputs.github-actor }}
+          draft: false
+          signoff: true
+          add-paths: |
+            environments/*/terraform.tfvars
