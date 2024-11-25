@@ -35,7 +35,7 @@ jobs:
   
   terraform-ci:
     needs: validate-inputs
-    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-ci.yml@add-slack-notify
+    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-ci.yml@main
     with:
       working-directory: "environments/${{ github.event.inputs.environment }}"
     secrets:
@@ -46,7 +46,7 @@ jobs:
 
   terraform-sec-scan:
     needs: terraform-ci
-    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-sec-scan.yml@add-slack-notify
+    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-sec-scan.yml@main
     with:
       working-directory: "environments/${{ github.event.inputs.environment }}"
       environment: "${{ github.event.inputs.environment }}"
@@ -56,7 +56,7 @@ jobs:
   terraform-cd:
     needs: terraform-ci
     if: ${{ github.event.inputs.trigger_cd == 'true' }}
-    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-cd.yml@add-slack-notify
+    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/terraform-cd.yml@main
     with:
       working-directory: "environments/${{ github.event.inputs.environment }}"
     secrets:
@@ -68,7 +68,7 @@ jobs:
   delete-tfplan-artifact:
     needs: [terraform-ci, terraform-cd]
     if: ${{ always() }}
-    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/delete-artifact.yml@add-slack-notify
+    uses: missaelcorm-iteso/schedulesync-aws/.github/workflows/delete-artifact.yml@main
     with:
       tfplan-artifact-id: ${{ needs.terraform-ci.outputs.tfplan-artifact-id }}
       github-repository: ${{ github.repository }}
