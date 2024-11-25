@@ -98,19 +98,19 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN_INPUT }}
-          commit-message: "Update Docker Tag ${{ inputs.docker-tag }}"
-          title: "Update Docker Tag ${{ inputs.docker-tag }}"
+          commit-message: "Update Docker Tag ${{ inputs.docker-image }}:${{ inputs.docker-tag }}"
+          title: "Update Docker Tag ${{ inputs.docker-image }}:${{ inputs.docker-tag }}"
           body: |
             # Update Docker Tag
             ## Description
-            Update Docker Tag ${{ inputs.docker-tag }} for ${{ inputs.service }} service:
-            - Docker Image: ${{ inputs.docker-image }}
-            - Docker Tag: ${{ inputs.docker-tag }}
-            - Environment: ${{ inputs.environment }}
-            - SHA: ${{ inputs.github-sha }}
-          branch: "docker-tag-${{ inputs.docker-image }}-${{ inputs.docker-tag }}"
+            Update Docker Tag `${{ inputs.docker-tag }}` for `${{ inputs.service }}` service:
+            - Docker Image: `${{ inputs.docker-image }}`
+            - Docker Tag: `${{ inputs.docker-tag }}`
+            - Environment: `${{ inputs.environment }}`
+            - SHA: `${{ inputs.github-sha }}`
+          branch: "${{ inputs.service }}/release/${{ inputs.docker-tag }}"
           base: "main"
-          labels: "docker-tag"
+          labels: "docker-tag,${{ inputs.service }}"
           assignees: ${{ inputs.github-actor }}
           draft: false
           signoff: true
