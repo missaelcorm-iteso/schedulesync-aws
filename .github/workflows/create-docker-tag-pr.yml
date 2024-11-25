@@ -60,7 +60,7 @@ jobs:
     needs: validate-inputs
     runs-on: ubuntu-latest
     env:
-      TERRFORM_TFVARS: ${{ github.workspace }}/environments/${{ inputs.environment }}/terraform.tfvars
+      TERRFORM_TFVARS: ./environments/${{ inputs.environment }}/terraform.tfvars
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -74,9 +74,17 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: File content
+        run: |
+          cat ${{ env.TERRFORM_TFVARS }}
+
       - name: Modify Docker Tag
         run: |
           python ${{ env.TERRFORM_TFVARS }} ${{ inputs.service }} ${{ inputs.docker-tag }}
+
+      - name: File content
+        run: |
+          cat ${{ env.TERRFORM_TFVARS }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
