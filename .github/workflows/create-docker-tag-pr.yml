@@ -98,7 +98,7 @@ jobs:
           base: "main"
           labels: "docker-tag"
           assignees: ${{ inputs.github-actor }}
-          reviewers: ${{ github.repository_owner }}
+          reviewers: "missaelcorm"
           draft: false
           signoff: true
           add-paths: |
