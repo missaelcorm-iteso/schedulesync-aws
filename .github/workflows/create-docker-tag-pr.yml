@@ -108,7 +108,7 @@ jobs:
             - Docker Tag: ${{ inputs.docker-tag }}
             - Environment: ${{ inputs.environment }}
             - SHA: ${{ inputs.github-sha }}
-          branch: "docker-tag-${{ inputs.docker-tag }}"
+          branch: "docker-tag-${{ inputs.docker-image }}-${{ inputs.docker-tag }}"
           base: "main"
           labels: "docker-tag"
           assignees: ${{ inputs.github-actor }}
