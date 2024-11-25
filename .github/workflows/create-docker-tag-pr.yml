@@ -31,6 +31,8 @@ on:
 jobs:
   validate-inputs:
     runs-on: ubuntu-latest
+    env:
+      SERVICE: ${{ github.event.inputs.service }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -49,7 +51,7 @@ jobs:
       - name: Validate Service
         run: |
           valid_services=("backend" "frontend")
-          if [[ ! " ${valid_services[@]} " =~ " ${{ github.event.inputs.service }} " ]]; then
+          if [[ ! " ${valid_services[@]} " =~ " ${SERVICE} " ]]; then
             echo "Service must be one of ${valid_services[@]}"
             exit 1
           fi
