@@ -17,6 +17,9 @@ on:
       cloudflare_api_token:
         description: 'Cloudflare API Token'
         required: true
+      SLACK_WEBHOOK_URL:
+        description: 'Slack Webhook Url'
+        required: true
     outputs:  
       tfplan-artifact-id:
         description: 'Terraform Plan Artifact ID'
@@ -33,6 +36,7 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_access_key }}
       TF_VAR_cloudflare_api_token: ${{ secrets.cloudflare_api_token }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -74,3 +78,16 @@ jobs:
         with:
           name: tfplan
           path: ${{ github.workspace }}/${{ inputs.working-directory }}/tfplan
+
+      - name: Send notification to Slack
+        uses: ./.github/actions/slack-notify
+        if: always()
+        with:
+          job_name: 'Terraform CI'
+          job_status: ${{ job.status }}
+          github_workflow: ${{ github.workflow }}
+          repo_name: ${{ github.repository }}
+          branch_name: ${{ github.ref }}
+          commit_sha: ${{ github.sha }}
+          slack_channel: '#notifications'
+          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}

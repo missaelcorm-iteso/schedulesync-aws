@@ -18,6 +18,9 @@ on:
       cloudflare_api_token:
         description: 'Cloudflare API Token'
         required: true
+      SLACK_WEBHOOK_URL:
+        description: 'Slack Webhook Url'
+        required: true
 
 jobs:
   terraform-cd:
@@ -49,3 +52,16 @@ jobs:
         working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
         run: |
           terraform apply -input=false -auto-approve tfplan
+
+      - name: Send notification to Slack
+        uses: ./.github/actions/slack-notify
+        if: always()
+        with:
+          job_name: 'Terraform CD'
+          job_status: ${{ job.status }}
+          github_workflow: ${{ github.workflow }}
+          repo_name: ${{ github.repository }}
+          branch_name: ${{ github.ref }}
+          commit_sha: ${{ github.sha }}
+          slack_channel: '#notifications'
+          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}

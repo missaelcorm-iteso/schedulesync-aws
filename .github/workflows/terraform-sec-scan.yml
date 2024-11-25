@@ -11,6 +11,10 @@ on:
         description: 'Environment'
         required: true
         type: string
+    secrets:
+      SLACK_WEBHOOK_URL:
+        description: 'Slack Webhook Url'
+        required: true
     outputs:
       tfsec-sarif-artifact-id:
         description: 'Terraform Security Scan Sarif Artifact ID'
@@ -54,6 +58,19 @@ jobs:
           name: security_tfsec_${{ env.ENVIRONMENT }}_json_${{ github.sha }}
           path: ${{ github.workspace }}/${{ inputs.working-directory }}/tfsec-report.json
           if-no-files-found: error
+
+      - name: Send notification to Slack
+        uses: ./.github/actions/slack-notify
+        if: always()
+        with:
+          job_name: 'Terraform Sec Scan'
+          job_status: ${{ job.status }}
+          github_workflow: ${{ github.workflow }}
+          repo_name: ${{ github.repository }}
+          branch_name: ${{ github.ref }}
+          commit_sha: ${{ github.sha }}
+          slack_channel: '#notifications'
+          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       # - name: Exit with failure if tfsec fails
       #   run: exit $([[ ${{ steps.tfsec.outcome }} == 'success' || ${{ steps.tfsec.outcome }} == 'skipped' ]] && echo 0 || echo 1)
