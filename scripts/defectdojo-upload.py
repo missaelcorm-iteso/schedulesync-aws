@@ -9,7 +9,8 @@ scans_types = {
     "tfsec-report.json": "TFSec Scan",
     "tfsec-report.sarif.json": "SARIF",
     "trivy-results.json": "Trivy Scan",
-    "javascript.sarif": "SARIF"
+    "javascript.sarif": "SARIF",
+    "report_json.json": "ZAP Scan"
 }
 
 scan_type = scans_types[file_name]
