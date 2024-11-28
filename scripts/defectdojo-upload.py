@@ -1,41 +1,59 @@
 import requests
-import sys
+import argparse
 
-file_name = sys.argv[1]
-token = sys.argv[2]
-scan_type = ''
+def main():
+    parser = argparse.ArgumentParser(description='Upload scan results to DefectDojo.')
+    parser.add_argument('--file', required=True, help='The scan result file to upload.')
+    parser.add_argument('--environment', required=True, help='The environment name.')
+    parser.add_argument('--token', required=True, help='The API token for authentication.')
+    parser.add_argument('--url', required=True, help='The base URL of the DefectDojo instance.')
 
-scans_types = {
-    "tfsec-report.json": "TFSec Scan",
-    "tfsec-report.sarif.json": "SARIF",
-    "trivy-results.json": "Trivy Scan",
-    "javascript.sarif": "SARIF",
-    "report_json.json": "ZAP Scan"
-}
+    args = parser.parse_args()
 
-scan_type = scans_types[file_name]
+    file_name = args.file
+    environment = args.environment
+    token = args.token
+    base_url = args.url
+    endpoint = '/api/v2/import-scan/'
 
-headers = {
-    'Authorization': f'Token {token}'
-}
+    scans_types = {
+        "tfsec-report.json": "TFSec Scan",
+        "tfsec-report.sarif.json": "SARIF",
+        "trivy-results.json": "Trivy Scan",
+        "javascript.sarif": "SARIF",
+        "zapproxy-results.xml": "ZAP Scan"
+    }
 
-url = 'https://demo.defectdojo.org/api/v2/import-scan/'
+    scan_type = scans_types.get(file_name, None)
+    if not scan_type:
+        print(f"Unsupported file type: {file_name}")
+        return
 
-data = {
-    'active': True,
-    'verified': True,
-    'scan_type': scan_type,
-    'minimum_severity': 'Low',
-    'engagement': 19
-}
+    headers = {
+        'Authorization': f'Token {token}'
+    }
 
-files = {
-    'file': open(file_name, 'rb')
-}
+    url = f'{base_url}{endpoint}'
 
-response = requests.post(url, headers=headers, data=data, files=files)
+    data = {
+        'active': True,
+        'verified': True,
+        'scan_type': scan_type,
+        'environment': environment,
+        'minimum_severity': 'Low',
+        'product_name': 'schedulesync',
+        'product_type_name': 'Research',
+        'engagement_name': f'schedulesync-{environment}',
+    }
 
-if response.status_code == 201:
-    print('Scan results imported successfully')
-else:
-    print(f'Failed to import scan results: {response.content}')
+    files = {'file': open(file_name, 'rb')}
+
+    response = requests.post(url, headers=headers, data=data, files=files)
+
+    if response.status_code == 201:
+        print("Scan uploaded successfully.")
+    else:
+        print(f"Failed to upload scan: {response.status_code} - {response.text}")
+
+if __name__ == "__main__":
+    main()
