@@ -11,7 +11,7 @@ locals {
 # Application Load Balancer
 resource "aws_lb" "main" {
   name               = "${local.name_prefix}-alb"
-  tfsec:ignore:aws-elb-alb-not-public
+  # tfsec:ignore:aws-elb-alb-not-public
   internal           = false
   load_balancer_type = "application"
   security_groups    = [var.security_group_id]
