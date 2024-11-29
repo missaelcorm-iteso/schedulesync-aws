@@ -1,5 +1,6 @@
 import requests
 import argparse
+import datetime
 
 def main():
     parser = argparse.ArgumentParser(description='Upload scan results to DefectDojo.')
@@ -17,14 +18,29 @@ def main():
     endpoint = '/api/v2/import-scan/'
 
     scans_types = {
-        "tfsec-report.json": "TFSec Scan",
-        "tfsec-report.sarif.json": "SARIF",
-        "trivy-results.json": "Trivy Scan",
-        "javascript.sarif": "SARIF",
-        "zapproxy-results.xml": "ZAP Scan"
+        "tfsec-report.json": {
+            "name": "TFSec Scan",
+            "type": "TFSec Scan",
+        },
+        "tfsec-report.sarif.json": {
+            "name": "TFSec Scan",
+            "type": "SARIF",
+        },
+        "trivy-results.json": {
+            "name": "Trivy Scan",
+            "type": "Trivy Scan",
+        },
+        "javascript.sarif": {
+            "name": "CodeQL Scan",
+            "type": "SARIF",
+        },
+        "zapproxy-results.xml": {
+            "name": "ZAP Scan",
+            "type": "ZAP Scan",
+        },
     }
 
-    scan_type = scans_types.get(file_name, None)
+    scan_type = scans_types.get(file_name, None).get('type', None)
     if not scan_type:
         print(f"Unsupported file type: {file_name}")
         return
@@ -39,7 +55,12 @@ def main():
         'active': True,
         'verified': True,
         'scan_type': scan_type,
+        'test_title': f'{scans_types.get(file_name, None).get('name', None)} - {datetime.datetime.now().strftime("%x %X")}',
         'environment': environment,
+        'service': 'schedulesync',
+        'close_old_findings': True,
+        'auto_create_context': True,
+        'deduplication_on_engagement': True,
         'minimum_severity': 'Low',
         'product_name': 'schedulesync',
         'product_type_name': 'Research',
