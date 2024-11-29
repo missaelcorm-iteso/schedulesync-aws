@@ -28,6 +28,7 @@ resource "aws_security_group_rule" "alb_http" {
   protocol          = "tcp"
 
   # Cloudflare IP ranges
+  # tfsec:ignore:aws-ec2-no-public-ingress-sgr
   cidr_blocks       = sort([
     "173.245.48.0/20",
     "103.21.244.0/22",
