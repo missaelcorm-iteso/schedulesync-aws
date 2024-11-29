@@ -55,7 +55,7 @@ resource "aws_security_group_rule" "alb_egress" {
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  # tfsec:ignore:aws-ec2-no-public-ingress-sgr
+  # tfsec:ignore:aws-ec2-no-public-egress-sgr
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.alb.id
 }
@@ -106,7 +106,7 @@ resource "aws_security_group" "frontend" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    # tfsec:ignore:aws-ec2-no-public-ingress-sgr
+    # tfsec:ignore:aws-ec2-no-public-egress-sgr
     cidr_blocks = ["0.0.0.0/0"]
   }
 
