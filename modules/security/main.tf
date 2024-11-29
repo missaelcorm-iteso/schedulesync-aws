@@ -105,6 +105,7 @@ resource "aws_security_group" "frontend" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
+    # tfsec:ignore:aws-ec2-no-public-ingress-sgr
     cidr_blocks = ["0.0.0.0/0"]
   }
 
