@@ -55,7 +55,7 @@ def main():
         'active': True,
         'verified': True,
         'scan_type': scan_type,
-        'test_title': f'{scans_types.get(file_name, None).get('name', None)} - {datetime.datetime.now().strftime("%x %X")}',
+        'test_title': f'{scans_types.get(file_name, None).get("name", None)} - {datetime.datetime.now().strftime("%x %X")}',
         'environment': environment,
         'service': 'schedulesync',
         'close_old_findings': True,
