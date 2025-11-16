@@ -92,6 +92,10 @@ module "backend_service" {
       value = "mongodb"
     },
     {
+      name  = "CERT_PATH"
+      value = "/usr/src/app/certs/global-bundle.pem"
+    },
+    {
       name  = "MONGO_ARGS"
       value = "tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
     },
