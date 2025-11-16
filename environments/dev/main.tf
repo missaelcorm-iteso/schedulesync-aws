@@ -80,7 +80,7 @@ module "backend_service" {
 
   environment_variables = [
     {
-      name  = "NODE_ENV"
+      name  = "ENVIRONMENT"
       value = var.environment
     },
     {
@@ -162,7 +162,7 @@ module "frontend_service" {
 
   environment_variables = [
     {
-      name  = "NODE_ENV"
+      name  = "ENVIRONMENT"
       value = var.environment
     },
     {
